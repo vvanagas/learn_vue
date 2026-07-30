@@ -133,3 +133,92 @@ OPEN:
 VERIFICATION:
   git -C C:\darbas4\learn_vue log --stat -1
   gh repo view learn_vue        # after auth + push; expect visibility: private
+
+================================================================================
+#2  Resolve coding-rules dual-install: document skill precedence in NOTES.md
+================================================================================
+
+[REQUEST]
+"read Matt Pocock teach skill clone chat if you can" — then, after a prior
+session's summary was pasted claiming the skills were installed only at
+~/.claude/skills/{teach,coding-rules}: "C:\Users\Vidma\.claude\skills\
+coding-rules must stay as global. why remove?" Then: "do it" (record the
+finding).
+
+[PLAN]
+1. Read the teach skill from the clone; verify the installed copy matches.
+2. Verify the pasted session summary against the actual filesystem.
+3. Establish which coding-rules copy is authoritative — from documentation,
+   not assumption.
+4. Record precedence + a two-target update procedure in NOTES.md.
+Blast Radius: NOTES.md only. No skill file, no config, nothing deleted.
+Rollback: git -C C:\darbas4\learn_vue checkout HEAD~1 -- NOTES.md
+
+[EXECUTED]
+  # --- Verified the pasted summary against disk ---
+  diff -rq C:\Users\Vidma\.claude\skills\teach `
+    C:\darbas4\mattpocock-skills\skills\productivity\teach
+  # → no output: installed teach is byte-identical to upstream.
+
+  git -C C:\darbas4\learn_vue remote -v
+  # → origin https://github.com/vvanagas/learn_vue.git — repo now exists,
+  #   unblocking the #1 BLOCKED item (gh auth was the gate).
+  git -C C:\darbas4\learn_vue worktree list
+  # → main tree only; the worktree concern raised in another session is moot.
+
+  rg -i 'mattpocock-skills|darbas4.coding-rules' C:\darbas4\learn_vue
+  # → hits only in history.txt #1, as a ledger of commands run. The upstream
+  #   clones are referenced by nothing operative; deleting them breaks nothing.
+
+  # --- Found what the pasted summary omitted ---
+  find C:\darbas4\learn_vue\.claude -type f
+  # → .claude/skills/coding-rules/{SKILL.md,coding-rules-master.txt,
+  #   binding-typescript.txt,LICENSE-coding-rules} — a SECOND install, vendored
+  #   in #1 step 5-6 and committed. The summary listed only the personal one.
+  diff -rq C:\Users\Vidma\.claude\skills\coding-rules `
+    C:\darbas4\learn_vue\.claude\skills\coding-rules
+  # → shared files identical; personal additionally carries binding-{go,php,
+  #   python}.txt. No drift yet.
+
+  # --- Settled precedence from the docs rather than by assumption ---
+  WebFetch https://code.claude.com/docs/en/skills
+  # → "When skills share the same name across levels, enterprise overrides
+  #   personal, and personal overrides project."
+  # → PERSONAL WINS. Initial recommendation (drop the personal copy, keep the
+  #   vendored one as canonical) was inverted and was not acted on. The personal
+  #   copy is what loads everywhere, including inside this workspace; global
+  #   CLAUDE.md mandates coding-rules for every project, so it must stay there.
+  #   The VENDORED copy is the shadowed one — inert on this machine.
+
+  # --- Recorded ---
+  # NOTES.md: replaced the single "coding-rules vendored" line with a subsection
+  #   "coding-rules exists in two places — personal shadows vendored":
+  #   which copy loads and why, the docs quote, the silent-drift hazard, a
+  #   two-target PowerShell update procedure, and a diff to verify agreement.
+
+[RESULT]
+Success. Documentation-only change; no file deleted, no skill modified.
+
+FOUND:
+  - coding-rules is installed twice, and the copy under version control is the
+    one that never loads. Left as-is: personal is required by global CLAUDE.md,
+    vendored earns its place on portability and CC BY 4.0 attribution.
+  - The shadowing fails silently. A one-target update would leave the repo
+    advertising rules that are not the ones enforced — the §6 divergence class,
+    caught before it bit. Both copies agree as of this entry.
+
+CLEARED:
+  - #1 BLOCKED (GitHub repo) — origin is configured; the user authenticated.
+  - #1 worktree concern — never materialized.
+
+OPEN (carried from #1, unchanged):
+  - MISSION.md OWED: the application is still unnamed. Phase 4 blocks without it.
+  - CR-13.4 exemplar slot unfilled.
+  - No lesson authored yet: lessons/, reference/, assets/ are empty. /teach
+    is disable-model-invocation, so the user starts it.
+
+VERIFICATION:
+  git -C C:\darbas4\learn_vue log --stat -1
+  diff -rq C:\Users\Vidma\.claude\skills\coding-rules `
+    C:\darbas4\learn_vue\.claude\skills\coding-rules
+  # expect: only the three extra bindings reported
