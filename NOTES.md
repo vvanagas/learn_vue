@@ -104,5 +104,9 @@ update path above.
   deliberately deferred to Phase 4 — see `OWED` in `MISSION.md`.
 - FastAPI and Postgres are a **secondary** goal, time-boxed to ~80 h in Phase 5A.
   When the two goals compete, the browser layer wins.
-- Calendar not yet settled: the backend adds ~60-80 h the original 756 did not
-  contain. Extend to ~10 months, or trim Phases 4-7. Phase 1 is never the trim.
+- Calendar: **~10 months, ~816 h**, settled 2026-07-31. Extended rather than
+  trimming Phases 4-7, so the CSS foundations stay whole.
+- `history.txt` is **git-ignored** and stays local — it carries absolute Windows
+  paths and the username in all of them, and the repo is public. Rationale and
+  the trade-off against the global CLAUDE.md protocol are in `.gitignore`.
+  Keep updating it; just do not expect it on a fresh clone.
