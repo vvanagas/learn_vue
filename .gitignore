@@ -37,14 +37,16 @@ blob-report/
 # vendored coding-rules ruleset is part of the course, not local config.
 .claude/settings.local.json
 
-# The mechanical ledger stays local. It carries absolute Windows paths, the
-# username in every one of them, and verbatim session quotes — none of it
-# secret, all of it personal, and the repo is public.
+# The mechanical ledger is a desk artifact and stays local. It records what ran
+# on THIS PC — absolute Windows paths, the username inside every one of them,
+# verbatim session quotes. Nothing secret; all of it personal, and the repo is
+# public. The phone and tablet surfaces have no use for it.
 #
-# TRADE-OFF, recorded so it is not rediscovered: the global CLAUDE.md protocol
-# treats history.txt as part of the project. Ignoring it means it no longer
-# travels on clone or handoff, and a fresh clone has no record of what ran.
-# docs/PROJECT_NOTES.md and learning-records/ remain the portable memory.
+# CONSEQUENCE, recorded so it is not rediscovered: a Claude Code cloud session
+# clones from GitHub, so it will not have this file and cannot append to it.
+# The ledger advances at the desk only; phone work lands in git and gets its
+# entry on the next PC session. learning-records/ and NOTES.md carry the
+# decisions and the why, and those DO travel.
 #
 # NOTE: this only stops FUTURE changes from publishing. history.txt is already
 # present in commits f08d461..59c06d6 and stays readable at those SHAs.

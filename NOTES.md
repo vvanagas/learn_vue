@@ -106,7 +106,8 @@ update path above.
   When the two goals compete, the browser layer wins.
 - Calendar: **~10 months, ~816 h**, settled 2026-07-31. Extended rather than
   trimming Phases 4-7, so the CSS foundations stay whole.
-- `history.txt` is **git-ignored** and stays local — it carries absolute Windows
-  paths and the username in all of them, and the repo is public. Rationale and
-  the trade-off against the global CLAUDE.md protocol are in `.gitignore`.
-  Keep updating it; just do not expect it on a fresh clone.
+- `history.txt` is **git-ignored** and stays local. It is a desk artifact —
+  it records what ran on this PC, in this PC's paths; phones and tablets have
+  no use for it, and the repo is public. Keep updating it at the desk. A cloud
+  session clones from GitHub and so cannot see or append to it: phone work
+  lands in git, and its ledger entry gets written on the next PC session.
