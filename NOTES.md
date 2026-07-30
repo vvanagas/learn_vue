@@ -30,9 +30,28 @@ weakness is *below* Vue, not in it.
 ## Environment
 
 - Windows 11, PowerShell primary, Bun installed and preferred over npm/npx.
-- Workspace is a git repository intended for `learn_vue` on GitHub (private).
+- Workspace is a git repository, `vvanagas/learn_vue` on GitHub. Currently
+  **private**; slated to go public so Pages can serve lessons to a phone.
+- Backend stack: FastAPI + Postgres under Docker (natively or via WSL).
 - Connected MCP servers usable in lessons: PrimeVue, Playwright, Context7.
 - `teach` skill installed at `~/.claude/skills/teach/`.
+- GitHub account plan is **Free** (`gh api user --jq .plan.name`). Pages
+  therefore needs a public repo; private Pages is Enterprise Cloud only.
+
+### Phone access — two separate problems
+
+**Reading lessons:** lessons are HTML, and github.com shows HTML as source.
+GitHub Pages over a public repo is the chosen route. Fallbacks if public becomes
+unwelcome: Tailscale to a static server on the Docker box, or a public
+mirror repo holding only `lessons/` and `assets/`.
+
+**Doing the work:** Claude Code cloud sessions (`claude --cloud`, steer from the
+phone app, `claude --teleport` to pull back to the terminal). Per
+[the docs](https://code.claude.com/docs/en/claude-code-on-the-web): each session
+is an isolated Anthropic-managed VM that clones from **GitHub, not this
+machine** — so push before handing off. It cannot reach local Docker or
+Postgres, and egress is limited by default. It is a research preview for **Pro,
+Max and Team**; the Claude plan has not been checked and this is unverified.
 
 ### `coding-rules` exists in two places — personal shadows vendored
 
@@ -77,4 +96,13 @@ update path above.
 - Composition API with `<script setup>` only. Options API is read-only knowledge.
 - Vue 3.5 stable. Vapor Mode (3.6 beta) is explicitly out of scope.
 - Pinia, not Vuex.
-- `coding-rules` phases in at Phase 6, not before.
+- `coding-rules` phases in at Phase 6, not before — now **both** bindings,
+  TypeScript and Python, since FastAPI makes the latter live. The vendored
+  copy carries only `binding-typescript.txt` and needs `binding-python.txt`
+  added when Phase 5A starts.
+- Application: a **CRUD admin tool with JWT auth**. Subject still unnamed and
+  deliberately deferred to Phase 4 — see `OWED` in `MISSION.md`.
+- FastAPI and Postgres are a **secondary** goal, time-boxed to ~80 h in Phase 5A.
+  When the two goals compete, the browser layer wins.
+- Calendar not yet settled: the backend adds ~60-80 h the original 756 did not
+  contain. Extend to ~10 months, or trim Phases 4-7. Phase 1 is never the trim.

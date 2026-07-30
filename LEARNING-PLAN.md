@@ -4,6 +4,19 @@ Derived from [MISSION.md](./MISSION.md). If the mission changes, this changes.
 
 **Budget:** ~4 h/weekday × ~21 weekdays/month × 9 months ≈ **756 hours**.
 
+**The backend is not free.** The mission originally assumed an existing
+JWT API to consume. Writing it — FastAPI, Postgres, Docker, token issuance —
+costs roughly **60-80 h** that the 756 did not contain. Two ways to pay:
+
+| Option | Effect |
+|---|---|
+| **Extend to ~10 months** (~816 h) | Foundations untouched. Recommended — Phase 1 is the mission, and trimming it to fund a secondary goal inverts the priority the mission just set. |
+| **Hold 9 months, trim Phases 4-7** | Keeps the calendar. Costs app scope and squeezes Phase 7 (deploy, a11y, perf) to roughly 70 h, which is thin for shipping. |
+
+**This is a mission-level decision and is not yet made.** The phase hours below
+are written for the extend option. If the 9-month calendar is hard, say so and
+the trim lands in Phases 4-7, never Phase 1.
+
 The ordering is not arbitrary. Vue renders to the DOM and styles it with CSS;
 a learner weak on that layer who starts at Vue cannot tell a Vue problem from a
 CSS problem, and every layout bug becomes unattributable magic. The foundations
@@ -77,8 +90,15 @@ fully typed, with no store and no router, and explain when a value should be
 
 ## Phase 4 — The shape of an application · Weeks 18-23 · ~120 h
 
-The chosen application starts here and grows through Phase 7. Every subsequent
-lesson lands in it.
+The application — a **CRUD admin tool with JWT auth** — starts here and grows
+through Phase 7. Every subsequent lesson lands in it. Its *subject* (what the
+rows represent) is still open; see the `OWED` section of [MISSION.md](./MISSION.md).
+It binds here and not before, which is the point of leaving it open: five months
+of building will name it better than today can.
+
+Until it is named, screens are built against a stand-in entity with deliberately
+varied fields — text, date, enum, foreign key, optional — because that variety is
+what forces real form work regardless of subject.
 
 - Vue Router: routes, nested routes, params, lazy loading, navigation guards.
 - Pinia: stores, when state belongs in a store versus a component.
@@ -94,26 +114,55 @@ with shared state and at least one non-trivial validated form.
 
 ---
 
-## Phase 5 — Backend integration and auth · Weeks 24-28 · ~100 h
+## Phase 5A — The backend I own · Weeks 24-27 · ~80 h
 
-The phase where existing strength pays off — the backend half is already known.
+The secondary goal, taken deliberately and time-boxed. This is a *translation*
+exercise, not a from-zero one: the CRUD-plus-JWT shape is already known from
+.NET, so what is genuinely new is Python's idiom, FastAPI's dependency
+injection, and Postgres — not the architecture.
 
-- HTTP from the browser: `fetch`, interceptors, error handling, CORS (expect
-  to lose an afternoon to CORS; everyone does).
-- Consuming the JWT-authenticated API. Login, token storage, refresh on expiry,
-  logout, and route guards that actually protect.
-- **Security caution:** this topic attracts poor blog content with real holes.
-  `RESOURCES.md` records it as an open gap deliberately. Existing .NET JWT
-  knowledge is the more trustworthy input here than anything a model recalls.
-- Typed API clients — sharing types across the wire.
+- FastAPI: path operations, Pydantic models as the request/response contract,
+  dependency injection, automatic OpenAPI.
+- Postgres: schema, migrations, indexes. SQL is not new; the ORM layer is.
+- Docker Compose: API + database + volumes, brought up with one command on a
+  machine that has never seen the project.
+- Issuing JWTs: hashing, signing, expiry, refresh. **The API side of the auth
+  contract**, so Phase 5B integrates against something whose internals are known.
+- Python typing and `coding-rules`' `binding-python.txt` read for orientation,
+  not yet enforced — rules still phase in at Phase 6.
 
-**Exit criterion:** log in against a real backend, hold a session across
-reloads, get transparently refreshed on expiry, and be correctly bounced from a
-protected route once the token is truly gone.
+**Time-box this.** Every hour past ~80 is an hour stolen from the primary goal.
+An adequate backend serves the mission; an elegant one behind a frontend that
+cannot be built does not.
+
+**Exit criterion:** `docker compose up` on a clean machine yields a running API
+with a browsable OpenAPI page, a migrated database, and a login endpoint that
+returns a token you can decode and see expire.
 
 ---
 
-## Phase 6 — Testing, and `coding-rules` phases in · Weeks 29-33 · ~100 h
+## Phase 5B — Wiring the two halves · Weeks 28-30 · ~80 h
+
+- HTTP from the browser: `fetch`, interceptors, error handling, CORS (expect
+  to lose an afternoon to CORS; everyone does — and now you own both sides of
+  it, which makes it diagnosable rather than mystifying).
+- Spending the JWT: login, token storage, refresh on expiry, logout, and route
+  guards that actually protect.
+- **Security caution:** this topic attracts poor blog content with real holes.
+  `RESOURCES.md` records it as an open gap deliberately. Existing .NET JWT
+  knowledge is the more trustworthy input here than anything a model recalls.
+- Typed API clients — and the genuine prize of owning both ends: generating
+  TypeScript types from FastAPI's OpenAPI schema, so the wire contract is
+  checked by the compiler instead of by hope.
+
+**Exit criterion:** log in against your own backend, hold a session across
+reloads, get transparently refreshed on expiry, and be correctly bounced from a
+protected route once the token is truly gone — with the frontend's types
+generated from the backend's schema rather than hand-written.
+
+---
+
+## Phase 6 — Testing, and `coding-rules` phases in · Weeks 31-35 · ~100 h
 
 Rules arrive here by design, per the mission's constraints: difficulty is the
 enemy while acquiring knowledge and the tool while drilling skills. By now
@@ -123,7 +172,8 @@ components are writable without conscious effort, so rigor has capacity to land.
   just asserting that the framework works.
 - Playwright for end-to-end flows.
 - Then `coding-rules`, read properly: `coding-rules-master.txt` plus
-  `binding-typescript.txt`.
+  `binding-typescript.txt` — and `binding-python.txt`, which the FastAPI half
+  now makes live. Both bindings, one master.
   - The **Iron Law** (CR-3.1-3.4): no production code without a captured
     failing test first.
   - **Proof lines**: the captured failing run and passing run, not the claim.
@@ -138,7 +188,7 @@ and passing runs captured in a learning record. Lint and typecheck green.
 
 ---
 
-## Phase 7 — Ship it · Weeks 34-39 · ~96 h
+## Phase 7 — Ship it · Weeks 36-42 · ~96 h
 
 - Production builds, environment config, bundle size.
 - Deployment to a real URL with a real domain.
@@ -166,6 +216,34 @@ Per `~/.claude/skills/teach/SKILL.md`, invoked as `/teach` from this directory:
   looks like one course. Building it is itself Phase 1 CSS practice.
 - Every claim in a lesson carries a citation to `RESOURCES.md`. Nothing is
   taught from model memory.
+
+## Working from a phone
+
+Two different problems, often confused:
+
+**Reading lessons.** Lessons are `.html`; github.com renders HTML as source, not
+as a page. The chosen answer is **GitHub Pages over a public `learn_vue`** —
+which works on the Free plan and needs the repo's visibility flipped. Until that
+happens, lessons are desk-only. Alternatives, if public turns out to be
+unwelcome: a Tailscale-reachable static server on the WSL/Docker box, or a
+separate public repo mirroring `lessons/` and `assets/`.
+
+**Doing the work.** Claude Code cloud sessions run on Anthropic-managed
+infrastructure, persist across devices, and are steerable from the phone app —
+`claude --cloud` starts one, `claude --teleport` pulls it back to the terminal.
+Two limits shape what that is good for:
+
+- Each session is an isolated VM that clones from **GitHub, not your machine**.
+  Push before handing off, or the cloud session works from stale code.
+- It cannot reach your local Docker or Postgres. Phone work means code, tests
+  and commits — not driving the running stack. Once the app is deployed
+  (Phase 7), the *running* app is reachable from the phone by ordinary means.
+- Cloud sessions are a research preview for Pro, Max and Team plans. **Verify
+  the account plan before this becomes load-bearing.**
+
+The practical consequence for the plan: phases 1-3 are almost entirely
+phone-compatible, because HTML, CSS, TypeScript and Vue components need no
+running database. From Phase 5A on, the stack matters and the desk matters.
 
 ## Review points
 

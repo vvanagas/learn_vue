@@ -222,3 +222,111 @@ VERIFICATION:
   diff -rq C:\Users\Vidma\.claude\skills\coding-rules `
     C:\darbas4\learn_vue\.claude\skills\coding-rules
   # expect: only the three extra bindings reported
+
+================================================================================
+#3  Name the application, adopt FastAPI+Postgres+Docker, revise plan
+================================================================================
+
+[REQUEST]
+"ok, I need you to create a learning plan for me to learn vue. ask if
+questions, read the skill, lets prepare the stuff"
+Then, asked which application: "Id like to learn fastapi (but as a secondary
+goal). Could be running here via docker (or on docker on wsl). could be
+postgresql backend as well. As well everything (including progress) should be
+on github and reachable/recoverable for learning sessions via phone as code.
+that would be ideal that Id be able to takover/experiment via phone as well.
+What are the options?"
+Then, from the options menu: app = "B — CRUD + JWT admin tool"; phone access =
+"Make learn_vue public + Pages"; plan = "Keep it — name the app and go".
+Mid-turn: "but claude on phone doesnt it spawn some virtual machine on
+anthropic cloud?" and "i mean code option on claude - its accessible later
+both via phone and gui and web".
+
+[PLAN]
+1. Read existing workspace state before writing anything — a plan already
+   existed from #1; do not re-derive it.
+2. Resolve the OWED application choice with the learner.
+3. Verify the phone-access claims against documentation, not memory.
+4. Fold the decisions into MISSION.md, LEARNING-PLAN.md, NOTES.md, and a
+   learning record.
+Blast Radius: docs only (MISSION.md, LEARNING-PLAN.md, NOTES.md,
+  learning-records/0003). No code, no repo settings, no visibility change.
+Rollback: git -C C:\darbas4\learn_vue reset --hard HEAD~1
+
+[EXECUTED]
+  # --- Read state first; the plan already existed ---
+  # MISSION.md, LEARNING-PLAN.md, learning-records/0001-0002 read in full.
+  # → 7 phases / 756 h already written in #1. Not rewritten. Learner
+  #   confirmed "Keep it — name the app and go".
+
+  # --- Verified phone-access claims rather than asserting them ---
+  gh api user --jq '{login: .login, plan: .plan.name}'
+  # → {"login":"vvanagas","plan":"free"}
+  gh api repos/vvanagas/learn_vue --jq '{private: .private, has_pages: .has_pages}'
+  # → {"has_pages":false,"private":true}
+  WebFetch https://docs.github.com/.../changing-the-visibility-of-your-github-pages-site
+  # → "To publish a GitHub Pages site privately, your organization must use
+  #   GitHub Enterprise Cloud." Free + private therefore cannot serve lessons;
+  #   Pages needs the repo public. Two doc pages queried before this one
+  #   returned nothing on plan requirements — recorded so it is not re-searched.
+  WebFetch https://code.claude.com/docs/en/claude-code-on-the-web
+  # → "each session runs in an isolated, Anthropic-managed VM"; clones from
+  #   GitHub not the local machine; "network access is limited by default";
+  #   research preview for Pro/Max/Team. Learner's guess was correct.
+  # → CONSEQUENCE: cloud sessions cannot reach local Docker/Postgres. Phone
+  #   work = code/tests/commits only. Recorded in NOTES.md and LEARNING-PLAN.md.
+
+  # --- Pre-flight for the pending visibility change ---
+  git ls-files
+  git grep -n -i -E "(leitavis|@gmail|password|secret|api[_-]?key|token *=|bearer )"
+  # → 16 tracked files, zero secrets, zero PII. Only CR-8.5 rule text matches.
+  #   .claude/settings.local.json is untracked and stays that way.
+
+  # --- Authored ---
+  # MISSION.md      — title now names an admin application; Why states the app
+  #                   and marks FastAPI/Postgres secondary; two success criteria
+  #                   added (own the API; work from a phone); two constraints
+  #                   added (backend stack, everything-in-git); two out-of-scope
+  #                   entries added (orchestration beyond compose, deep FastAPI);
+  #                   OWED narrowed from "name the app" to "name its subject".
+  # LEARNING-PLAN.md — budget section now carries the ~60-80 h backend cost and
+  #                   the extend-vs-trim table, left UNDECIDED as a mission-level
+  #                   call; Phase 4 names the app and the stand-in-entity tactic;
+  #                   Phase 5 split into 5A (build the API, time-boxed 80 h) and
+  #                   5B (wire the halves, OpenAPI-generated TS types); Phase 6
+  #                   adds binding-python.txt; Phases 6-7 week numbers shifted;
+  #                   new "Working from a phone" section.
+  # NOTES.md        — environment updated with the stack, the Free plan finding,
+  #                   and the two-problems phone breakdown; standing decisions
+  #                   updated with the app, the secondary-goal rule, the
+  #                   binding-python gap in the vendored copy, and the open
+  #                   calendar question.
+  # learning-records/0003-application-named-and-backend-adopted.md — new.
+
+[RESULT]
+Success, with two decisions deliberately left to the learner.
+
+DECIDED:
+  - Application shape: CRUD admin tool with JWT auth, FastAPI + Postgres +
+    Docker. Chosen against the recommendation (log/text-analysis dashboard);
+    the learner traded browser-layer density for lower backend risk.
+  - FastAPI/Postgres are secondary and time-boxed to ~80 h.
+
+OPEN — needs the learner:
+  - CALENDAR: extend to ~10 months, or hold 9 and trim Phases 4-7. Mission-level,
+    so not decided unilaterally per MISSION-FORMAT ("Confirm before changing").
+  - VISIBILITY: repo is still private. Making it public is an outward-facing,
+    effectively irreversible act (public content is indexed and cached), so it
+    waits on an explicit go-ahead even though the option was selected. Scan
+    found no secrets; what would be exposed is personal, not sensitive —
+    schedule, self-assessed weaknesses, Windows username in paths.
+  - SUBJECT: what the admin tool administers. Bound at Phase 4, ~month 5.
+  - Claude plan (Pro/Max/Team?) unverified; cloud sessions depend on it.
+
+STILL TRUE FROM #1:
+  - No lesson authored. lessons/, reference/, assets/ remain empty. /teach is
+    disable-model-invocation; the learner starts it.
+
+VERIFICATION:
+  git -C C:\darbas4\learn_vue log --stat -1
+  git -C C:\darbas4\learn_vue diff --stat HEAD~1
