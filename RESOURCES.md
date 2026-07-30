@@ -142,11 +142,23 @@ not merely conceivable") and it records its own rejections and gaps.
   read_write, fan_out) and two async (correlation, compensation). The **trust**
   seam is Phase 5B's spine.
 
+- `client-corpus-open-issues.txt` — **written 2026-07-31**, the client-side
+  ledger the corpus lacked. OI-01 records that the corpus's "reactivity loss via
+  destructuring" predates Vue 3.5 and would forbid correct code if copied into a
+  binding verbatim; OI-02 records that `binding-vue.txt` now restates several CL
+  cards in CR grammar, so those obligations have a second home and the corpus's
+  own one-relation-one-home rule needs a deliberate call.
+
 **Unread, and possibly load-bearing:** `archetype-stage-dissection.txt` (the
 12-stage pipeline the whole corpus is expressed against), `Web-archetype-master.txt`,
 `design_pipeline.txt`. `server-corpus-open-issues.txt` has no text
 representation in Box and could not be read at all — re-save it there if its
 contents matter.
+
+**Do not rewrite a corpus file through the Box connector.** Reads arrive via
+text extraction, so a round-trip cannot be proven byte-faithful and could
+silently reflow a golden file. Amend the ledger and comment on the file; make
+the edit against the real one.
 
 ## Wisdom (Communities)
 
