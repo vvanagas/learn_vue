@@ -23,6 +23,11 @@ foundations stay whole, and shipping keeps its hours.
 | 7 — Ship it | 96 | 36-42 |
 | **Total** | **816** | **~42 weeks** |
 
+Plus the **CI thread** (~30 h), which is not a phase — see below. Ten months at
+4 h/weekday is ~840 h nominal, so the phases leave ~24 h of slack; the CI thread
+consumes it and runs ~6 h past nominal. That is a day and a half against a
+ten-month estimate — a rounding error, not a calendar change.
+
 Slipping a phase is still normal. The table is a budget, not a schedule.
 
 The ordering is not arbitrary. Vue renders to the DOM and styles it with CSS;
@@ -73,9 +78,13 @@ Vue". It is the phase the mission is actually about.
 **Skip:** classes, inheritance, interfaces-as-contracts. Java and C# already
 taught these; re-teaching them wastes hours the CSS phase could use.
 
+**CI thread, ~6 h:** the first workflow. Typecheck and lint on every push. See
+*The CI thread* below.
+
 **Exit criterion:** write a small typed data-processing tool — a natural fit
 for the existing regex and text-processing strength — that compiles clean under
-`tsc --strict` with no `any` and no non-null assertions.
+`tsc --strict` with no `any` and no non-null assertions — and the same check
+passes in CI, on a runner that has never seen your machine.
 
 ---
 
@@ -147,6 +156,9 @@ gets classified before it gets built:
 - `form_commander` forbids CL05 by default: latest-wins is a *read* policy, and
   applying it to submits is lost writes. That distinction is worth a lesson.
 
+**CI thread, ~4 h:** work moves to pull requests, and branch protection makes a
+red check block the merge.
+
 **Exit criterion:** the application has three or more real screens, navigable,
 with shared state and at least one non-trivial validated form — and each screen
 can be named as a slice archetype, with any seam between two slices identified.
@@ -188,6 +200,10 @@ earn early attention:
 **Time-box this.** Every hour past ~80 is an hour stolen from the primary goal.
 An adequate backend serves the mission; an elegant one behind a frontend that
 cannot be built does not.
+
+**CI thread, ~6 h:** a real Postgres as a service container, so integration
+tests run against a real store rather than a mock. Image build; secrets and
+variables; least-privilege `permissions:` on `GITHUB_TOKEN`.
 
 **Exit criterion:** `docker compose up` on a clean machine yields a running API
 with a browsable OpenAPI page, a migrated database, and a login endpoint that
@@ -258,6 +274,10 @@ components are writable without conscious effort, so rigor has capacity to land.
   CL10's include `retry_does_not_double_apply`. Test-first is easier when the
   test list was written before the code, by someone who had seen the failure.
 
+**CI thread, ~8 h — the anchor.** This is where CI stops being convenience and
+becomes the enforcement surface, because `[auto]` is a claim until something
+red blocks something. Covered below.
+
 **Exit criterion:** one new feature built entirely test-first, with the failing
 and passing runs captured in a learning record. Lint and typecheck green.
 
@@ -272,10 +292,85 @@ and passing runs captured in a learning record. Lint and typecheck green.
 - Performance: what actually matters, measured rather than assumed.
 - Then use the thing, find what is wrong, and fix it.
 
+**CI thread, ~6 h:** deploy on merge. Environments and protection rules, deploy
+secrets, and a rollback you have actually executed once — an untested rollback
+is a plan, not a capability.
+
 **Exit criterion:** the mission's first success line is true — a deployed
 application, at a URL, whose frontend you wrote.
 
 ---
+
+## The CI thread — GitHub Actions · ~30 h · woven through Phases 2-7
+
+**Not a phase, on purpose.** CI has no single right moment. Taught early it is
+a toy — there is nothing worth checking yet. Taught only at the end it arrives
+after the habits it exists to enforce have already set. Its value appears in
+five small instalments, each attached to the thing that just became worth
+guarding.
+
+**Start from a fact:** this repository is already running CI, and you never
+wrote a workflow.
+
+```
+pages build and deployment | success | 2026-07-30T21:42:45Z
+```
+
+Enabling Pages created it. That is the first lesson's hook — the mechanism is
+already live and observable, so the opening move is *reading* a run rather than
+writing YAML.
+
+| When | Hours | What lands |
+|---|---|---|
+| **Phase 2** | ~6 | The mental model: event → workflow → job → step, running on a runner that is not your machine. Trigger on push and pull_request. `vue-tsc --noEmit` and eslint. Dependency caching, because a slow pipeline is one you learn to ignore. |
+| **Phase 4** | ~4 | Work moves to pull requests. Component tests run on the PR. **Branch protection with required checks** — the step that converts a signal into a gate. |
+| **Phase 5A** | ~6 | A real Postgres as a **service container**, so CR-3.12's "integration tests against a real store" runs reproducibly. Building the image. Secrets vs variables. Least-privilege `permissions:` on `GITHUB_TOKEN`. |
+| **Phase 6** | ~8 | **The anchor** — CI as the enforcement surface. See below. |
+| **Phase 7** | ~6 | Deploy on merge. Environments and protection rules. A rollback you have executed at least once. |
+
+### The through-line: CI is what makes `[auto]` true
+
+`coding-rules` tags every rule `[auto]`, `[review]`, or `[advisory]`, and
+`binding-vue` says it plainly: *a red linter is the violation*. That sentence is
+false until something red blocks something. On a laptop, a failing lint is a
+suggestion you can commit past. Behind a required status check it is a wall.
+
+So Phase 6 is where CI earns its place: the `[auto]` tier becomes real, and the
+`coding-rules` projection check — a mechanical `grep`+`diff` you currently run by
+hand — becomes a job that cannot be forgotten.
+
+**And the honest other half: CI cannot enforce `[review]`.** No runner can check
+that you watched a test fail first, for the right reason, before writing the
+code. The Iron Law's proof is a captured RED run in the task record, and that is
+a discipline, not a pipeline. A course that teaches CI without teaching this
+produces someone who believes green means compliant. Knowing which tier a rule
+sits in — and therefore what green actually proves — is the lesson.
+
+### Security runs the length of the thread
+
+A workflow is a program that runs with your credentials on someone else's
+machine, triggered by events other people can influence. The recurring holes:
+
+- **Script injection through `${{ }}`.** Interpolating untrusted context —
+  `github.event.pull_request.title` and friends — into an inline shell script
+  splices attacker text into the script *before* the shell sees it. The
+  mitigation is an intermediate `env:` variable, so the value is data rather
+  than source. This is CR-4.3's boundary rule wearing YAML.
+- **`pull_request_target`** runs with a privileged token in the base repo's
+  context. GitHub's guidance is to avoid it where possible and never check out
+  untrusted code under it.
+- **Least-privilege `permissions:`**, and third-party actions pinned to a commit
+  SHA rather than a moving tag.
+- **CR-8.5 in CI**: secrets are masked in logs, not absent from them. A secret
+  echoed into a build log is disclosed.
+
+### Exit criterion
+
+A pull request that **cannot** be merged red — typecheck, lint, unit and
+integration tests all required — and a merge to the default branch that deploys
+without anyone opening a terminal. Plus one sentence you can say without
+hedging: which rules your pipeline enforces, and which ones it merely watched
+you claim.
 
 ## How sessions run
 

@@ -29,7 +29,9 @@ the primary one.
 - That API is mine: FastAPI + Postgres, issuing the tokens the frontend spends,
   brought up with a single `docker compose up` on a machine that has never seen
   it before.
-- The code passes `tsc --strict` and its own test suite, written test-first.
+- The code passes `tsc --strict` and its own test suite, written test-first —
+  and those checks run in CI on every change, where a red result blocks the
+  merge instead of being something I can commit past.
 - I can pick the work up from a phone — read a lesson, and hand a task to a
   cloud session — without needing to be at the desk.
 

@@ -71,6 +71,27 @@ on 2026-07-30 rather than recalled, because community links rot fastest.
   Use for: checking what actually shipped, rather than trusting a model or a
   blog post. Relevant during this course because 3.6 and Vapor Mode are moving.
 
+### The CI thread — GitHub Actions (Phases 2-7)
+
+- [GitHub Actions documentation](https://docs.github.com/en/actions)
+  Official and the only source that stays current with the runner images and
+  the YAML schema. Use for: workflow syntax, contexts and expressions, caching,
+  service containers, environments. Blog posts about Actions rot fast because
+  the platform moves; check here before trusting one.
+- [Secure use reference](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions)
+  Read this **before** writing a workflow that reacts to pull requests, not
+  after. Use for: script injection through `${{ }}` with untrusted context and
+  the intermediate-`env:` mitigation, `pull_request_target` hazards, and
+  `GITHUB_TOKEN` permission scoping. Verified 2026-07-31; note the page is
+  titled "Secure use reference" rather than the older hardening-guide name.
+- [Workflow syntax reference](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax-for-github-actions)
+  Use for: the lookup you keep open while writing YAML — `on:`, `jobs:`,
+  `needs:`, `if:`, `permissions:`, `services:`.
+- This repository's own Actions tab
+  Use for: the first lesson. `pages build and deployment` has been running
+  since Pages was enabled and nobody wrote it — reading a real run beats
+  reading a tutorial's imaginary one.
+
 ### House ruleset
 
 - `.claude/skills/coding-rules/` — vendored from
