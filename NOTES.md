@@ -110,6 +110,67 @@ source, referenced by nothing. `mattpocock-skills` is disposable — one
 `git clone --depth 1` restores it. Keep the `coding-rules` clone; it is the
 update path above.
 
+## Deferred — not now, but don't lose them
+
+Nothing here blocks a lesson. Each item names when it actually comes due, so it
+can be ignored safely until then. Full context lives in `history.txt` at the
+entry noted.
+
+### Upstream the `teach` fixes — no due date, purely optional (#13-#15)
+
+The fork `vvanagas/skills` branch `teach-workspace-fixes` is three commits and
+nine changes ahead of `mattpocock/skills`. It costs nothing to leave alone; the
+only price is re-applying it if upstream is ever pulled.
+
+If it is ever worth contributing back, **split it — do not offer it as one PR:**
+
+- **A small PR: the objective defects.** The glossary was specified in three
+  disagreeing places and `GLOSSARY-FORMAT.md` was linked from nowhere while the
+  other three format files were linked. Plus dates on learning records, which
+  are near-objective — the skill mandates spacing and shipped no way to do it.
+  Anyone can verify both in two minutes; there is nothing to argue with.
+- **An issue, not a PR, for the rest.** The Iron Rule, the resolution taxonomy,
+  the scope boundary, `PLAN.md`, the grill-me/reconcile ports. These are
+  opinions about what the skill should be, and a maintainer's "no" is
+  legitimate — he may have kept it lightweight deliberately.
+
+Bundled, a reviewer who wants the bug fix but not the taxonomy has to reject
+everything. Split, the bug fix is an easy yes and the rest becomes a
+conversation. Note upstream has **no license**, so there is no CLA or explicit
+grant in either direction.
+
+### Comes due at Phase 5A
+
+- **`binding-python.txt` is not in the vendored `coding-rules` copy.** It exists
+  in the personal install. Copy it when FastAPI starts (#5, #7).
+- **Claude plan unverified.** Cloud sessions are a research preview for Pro, Max
+  and Team. Check before phone hand-off becomes load-bearing (#3).
+
+### Comes due at Phase 6
+
+- **`CR-13.4` exemplar slots are OWED** in both `binding-vue.txt` and
+  `binding-typescript.txt`. They need a real file from this codebase, which is
+  why they could not be filled early (#7).
+- **`V-4` reads `[review]` where part should be `[auto]`** — no accessibility
+  linter is named in `binding-vue`, because the package identity was not
+  verified at authoring time and citing it wrongly is worse than the gap (#7).
+
+### No due date — decisions and reading
+
+- **OI-02: who is canonical for Vue?** `binding-vue.txt` restates several CL
+  cards in CR grammar, so those obligations now have two homes. The corpus's own
+  one-relation-one-home rule says pick deliberately: corpus canonical and the
+  binding cites it, or the reverse (#11, #12).
+- **Five corpus files unread**, `archetype-stage-dissection.txt` most of all —
+  it holds the 12-stage pipeline everything else is expressed against (#5).
+- **`server-corpus-open-issues.txt` has no Box text representation** and cannot
+  be read through the connector. Re-saving it in Box would likely generate one
+  (#5).
+- **Two `teach` gaps left unfixed on purpose** — no record of retention outcomes
+  over time, and no home for the learner's own code. Both change the skill's
+  teaching model rather than repair an inconsistency, which is a bigger thing to
+  do to someone else's design (#13).
+
 ## Standing decisions
 
 - Composition API with `<script setup>` only. Options API is read-only knowledge.
