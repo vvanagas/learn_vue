@@ -330,3 +330,98 @@ STILL TRUE FROM #1:
 VERIFICATION:
   git -C C:\darbas4\learn_vue log --stat -1
   git -C C:\darbas4\learn_vue diff --stat HEAD~1
+
+================================================================================
+#4  Extend to ~10 months; repo public; GitHub Pages serving lessons
+================================================================================
+
+[REQUEST]
+Two decisions from the option menu: calendar = "Extend to ~10 months"; repo
+visibility = "Yes — make it public and enable Pages".
+
+[PLAN]
+1. Record the calendar decision in MISSION.md and LEARNING-PLAN.md.
+2. Add the Pages entry point.
+3. Push, flip visibility, enable Pages, verify the URL actually serves.
+Blast Radius: the GitHub repo becomes world-readable. Docs + two new files.
+Rollback: gh repo edit vvanagas/learn_vue --visibility private \
+            --accept-visibility-change-consequences
+  # NOTE: reverts access, does NOT unpublish. Public content is indexed and
+  # cached by third parties; this is why the flip waited on explicit consent.
+
+[EXECUTED]
+  # --- Calendar recorded ---
+  # MISSION.md: Time constraint 9 months / 700-780 h → ~10 months / 800-830 h,
+  #   with the reason stated inline (the alternative funded a secondary goal
+  #   out of the CSS foundations the mission exists to build).
+  # LEARNING-PLAN.md: replaced the open extend-vs-trim table with the settled
+  #   phase/hour/week table. 120+80+140+120+80+80+100+96 = 816 h over ~42 weeks.
+
+  # --- Pages entry point ---
+  # .nojekyll (empty) + index.html
+  # ROOT CAUSE for .nojekyll: GitHub Pages runs Jekyll by default and Jekyll
+  #   parses {{ }} as Liquid. This is a Vue course; every lesson will contain
+  #   Vue mustaches. Without .nojekyll the build eats them silently.
+  #   Consequence: Markdown no longer renders at the site root, hence index.html
+  #   rather than relying on README.md.
+
+  # --- Push blocked, then unblocked ---
+  git push origin main
+  # → fatal: Authentication failed. "Password authentication is not supported"
+  # → gh was authenticated but git had no credential helper for github.com.
+  gh auth setup-git
+  # → writes credential.https://github.com.helper to GLOBAL gitconfig,
+  #   delegating to `gh auth git-credential`. Affects all repos on this machine.
+  git push origin main
+  # → f08d461..1869067  main -> main
+
+  # --- Visibility + Pages ---
+  gh repo edit vvanagas/learn_vue --visibility public \
+    --accept-visibility-change-consequences
+  gh api repos/vvanagas/learn_vue --jq '{private: .private, visibility: .visibility}'
+  # → {"private":false,"visibility":"public"}
+  gh api repos/vvanagas/learn_vue/pages -X POST \
+    -f 'source[branch]=main' -f 'source[path]=/'
+  # → html_url https://vvanagas.github.io/learn_vue/  https_enforced true
+
+  # --- Verified, not assumed ---
+  gh api repos/vvanagas/learn_vue/pages/builds/latest --jq .status
+  # → building, building, built  (polled; ~30 s)
+  curl -sS -o /dev/null -w "%{http_code} %{content_type}" \
+    https://vvanagas.github.io/learn_vue/
+  # → HTTP 200  text/html; charset=utf-8
+  curl -s https://vvanagas.github.io/learn_vue/ | grep -o '{{ }}'
+  # → {{ }}  — .nojekyll honored; Liquid did not eat the mustaches.
+  # → NOTE: a first curl returned HTTP 000 (transient connect failure on a cold
+  #   Pages domain). Re-ran; 200. Recorded so it is not re-diagnosed later.
+  curl ... https://vvanagas.github.io/learn_vue/MISSION.md
+  # → HTTP 200 but Content-Type text/markdown — a phone shows raw text, not
+  #   rendered Markdown. FIXED by pointing index.html's course links at
+  #   github.com/.../blob/main/ URLs, which render on mobile.
+
+[RESULT]
+Success. Lessons are now phone-reachable the moment the first one exists.
+
+LIVE:
+  https://vvanagas.github.io/learn_vue/   HTTP 200, HTTPS enforced
+
+CONSEQUENCES TO KNOW:
+  - The repo is world-readable. No secrets (scanned in #3), but the schedule,
+    the self-assessed HTML/CSS weakness, and the Windows username in these
+    very paths are now public. Reverting restores access control; it does not
+    un-index what has been crawled.
+  - gh auth setup-git changed GLOBAL git config, not just this repo.
+  - index.html is a placeholder with inline styles. assets/ is still empty;
+    the shared stylesheet belongs to the first /teach session, which should
+    replace the <style> block with a link to assets/style.css.
+
+OPEN (carried):
+  - SUBJECT: what the admin tool administers. Binds at Phase 4, ~month 5.
+  - Claude plan (Pro/Max/Team?) unverified — cloud sessions depend on it.
+  - binding-python.txt still absent from the vendored coding-rules copy; add
+    when Phase 5A starts.
+  - No lesson authored. lessons/, reference/, assets/ still empty.
+
+VERIFICATION:
+  curl -sS -o /dev/null -w "%{http_code}\n" https://vvanagas.github.io/learn_vue/
+  gh api repos/vvanagas/learn_vue --jq .visibility
