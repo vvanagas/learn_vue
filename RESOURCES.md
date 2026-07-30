@@ -170,15 +170,27 @@ drives the next search — it is not decoration.
 
   Existing .NET JWT knowledge stays the sanity check, but it is no longer the
   *only* trustworthy input.
-- **coding-rules has no frontend binding** — narrowed, not closed. Bindings ship
-  for TypeScript, Go, Python and PHP; `binding-typescript.txt` is backend-shaped
-  (Bun + Elysia, Drizzle, route schemas), and its CR-13.4 exemplar slot is
-  unfilled. The client corpus does **not** fill this: it is deliberately
-  framework-neutral and says so, stating that Vue-specific forbidden lists
-  belong in `coding-rules` per stack. It even names the two it expects —
-  *reactivity loss via destructuring* and *gratuitous deep watchers*. So the
-  gap is now a specified piece of work rather than an open question, and
-  writing `binding-vue.txt` is a genuine contribution back.
+- ~~**coding-rules has no frontend binding.**~~ **CLOSED 2026-07-31** —
+  `binding-vue.txt` v0.1 written and vendored to
+  `.claude/skills/coding-rules/`, passing the master's projection check (101
+  CR tokens, empty diff). Splits from `binding-typescript.txt` by *runtime*
+  rather than language: browser-side Vue loads it, server-side TypeScript keeps
+  the original, a change touching both loads both.
+
+  Two residuals remain, tracked in the binding's own `Floor deviations` block
+  rather than here: its **CR-13.4 exemplar slot is OWED** (no codebase yet to
+  point at), and **V-4 reads `[review]` where part should be `[auto]`** because
+  no accessibility linter is named — the package identity was not verified at
+  authoring time and citing it wrongly would be worse than recording the gap.
+  Both are Phase 6 work; see [LEARNING-PLAN.md](./LEARNING-PLAN.md).
+
+  A correction it embeds, worth knowing before you read older advice: the
+  corpus's *"reactivity loss via destructuring"* predates Vue 3.5. Destructuring
+  `defineProps()` **is** reactive in 3.5+ — the compiler rewrites the access.
+  The loss now happens when a destructured prop is passed *into* a function
+  (`watch(foo, …)` needs `watch(() => foo, …)`), when a `reactive()` object is
+  destructured, or when `.value` is read into a local. V-2 states it in 3.5
+  terms and carries a version note to revisit on a major bump.
 - **Python binding not vendored.** `binding-python.txt` exists in the personal
   `coding-rules` install but not in this repo's vendored copy. Needed at Phase
   5A; see `NOTES.md`.

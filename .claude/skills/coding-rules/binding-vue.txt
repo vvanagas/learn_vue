@@ -1,0 +1,400 @@
+# binding-vue v0.1
+
+parent: coding-rules-master v0.4. Load this file WITH the master; this file
+supplies mechanism and idiom, the master supplies the obligation. Every
+CR-token from the master appears below or in not_applicable.
+
+Scope: Vue 3.5 SFCs with `<script setup>` and TypeScript, running in a
+browser. Sibling of binding-typescript, not a replacement for it: a
+full-stack change loads BOTH (master's "a change spanning two languages
+loads both bindings" — here the split is by RUNTIME, not by language).
+Server-side TypeScript keeps binding-typescript.
+
+The governing inversion, which reshapes §8 more than anything else: this
+code runs on hardware the user controls. Nothing here ENFORCES anything.
+Every client-side check is UX; the obligation it appears to discharge lives
+on the server. A binding that forgets this produces confident, decorative
+security.
+
+## Toolchain (the [auto] promotions)
+
+tsconfig: strict, noUncheckedIndexedAccess, noImplicitOverride,
+exactOptionalPropertyTypes, useUnknownInCatchVariables,
+verbatimModuleSyntax                                           → CR-2.1
+vue-tsc --noEmit in CI (tsc alone does not type-check SFC
+  templates; a green tsc on a broken template is the trap)     → CR-2.1 CR-2.9
+eslint (@typescript-eslint + core), as binding-typescript:
+  no-explicit-any                                              → CR-2.2
+  no-restricted-syntax `TSAsExpression > TSAsExpression`       → CR-2.4
+  switch-exhaustiveness-check                                  → CR-2.14
+  no-floating-promises                                         → CR-2.18
+  naming-convention                                            → CR-2.19
+  no-warning-comments                                          → CR-5.3
+  no-console (allow: error)                                    → CR-5.4
+  consistent-type-imports                                      → CR-5.6
+eslint-plugin-vue (flat config, vue3-recommended):
+  vue/no-mutating-props                                        → CR-1.4 CR-2.12
+  vue/no-side-effects-in-computed-properties,
+  vue/no-async-in-computed-properties                          → CR-1.3
+  vue/no-ref-as-operand, vue/no-ref-object-reactivity-loss,
+  vue/no-setup-props-reactivity-loss                           → V-2
+  vue/no-watch-after-await                                     → CR-4.7
+  vue/no-arrow-functions-in-watch                              → V-1
+  vue/require-explicit-emits, vue/valid-define-emits,
+  vue/valid-define-props                                       → CR-2.9
+  vue/no-undef-properties                                      → CR-2.6
+  vue/require-v-for-key                                        → V-5
+CI: bun install --frozen-lockfile; save-exact                  → CR-5.5
+Test runner: Vitest + @vue/test-utils; Playwright for E2E      → CR-3.11 CR-3.12
+
+Rules promoted above are [auto]; a red linter is the violation. Everything
+else below is [review].
+
+OWED: no accessibility linter is named here. An eslint a11y plugin for Vue
+exists but its current package identity was not verified when this file was
+written, so it is recorded as a gap rather than cited wrongly (CR-13.4's
+convention applied to toolchain). V-4 reads at [review] until it is named.
+
+## Bindings (mechanism + idiom per master rule)
+
+Architecture — the layer ladder translates as
+template → component script → composable → api-client/port → transport:
+
+- CR-1.1: a component never imports the transport client. It calls a
+  composable; the composable calls a port. Skipping a rung is the violation,
+  same as a handler touching persistence.
+- CR-1.2 CR-1.3: business decisions live in plain `.ts` modules with no Vue
+  import at all — that is the mechanical test for purity here. If it needs
+  `ref`, it is not core logic. `computed` bodies are pure by rule
+  [auto: vue/no-side-effects-in-computed-properties].
+- CR-1.4: no module-level `ref`/`reactive` reached from components (a shared
+  singleton store wearing a module's clothes). State is a Pinia store with a
+  declared owner, or it is component-scoped. No side effects at import time.
+- CR-1.5: config is `import.meta.env`, read once into a settings module and
+  validated there (CR-4.3). Vite exposes only `VITE_`-prefixed vars to the
+  bundle; everything exposed is PUBLISHED (CR-8.5).
+- CR-1.6: dependencies injected via `provide`/`inject` with a typed
+  `InjectionKey`, or passed to the composable as arguments. A one-method
+  dependency is a function parameter. Global `app.config.globalProperties` is
+  not injection; it is a hidden singleton (CR-1.4).
+- CR-1.7: per-operation state lives in the composable's own scope, created
+  per call — never on a store shared across concurrent operations.
+- CR-1.8: `setup` is the constructor and must not await. Async work starts in
+  `onMounted` or in an explicitly awaited composable; `<Suspense>` is a
+  recorded decision, not a default.
+- CR-1.9: classes only for identity+behavior; server payloads and view models
+  are plain readonly records with discriminated unions.
+- CR-1.10: "persistence" on this side is the server plus browser storage.
+  Only the api-client/storage port touches it; it returns domain objects and
+  contains no business branching.
+
+Types — as binding-typescript, with these SFC specifics:
+- CR-2.1 CR-2.2 CR-2.4 CR-2.14 CR-2.18 CR-2.19 [auto] per the toolchain block.
+- CR-2.3: unchecked `as` carries a justification or a runtime check
+  immediately before it. Template refs (`ref<HTMLElement | null>(null)`) are
+  the recurring temptation — narrow, do not assert.
+- CR-2.5: non-null `!` requires a justifying comment. `!` on a template ref
+  before mount is a bug, not a shortcut.
+- CR-2.6: EVERY value arriving from outside the running program is `unknown`
+  first — fetch responses, route params, storage reads, `postMessage`, push
+  frames, third-party widget callbacks. A server response is external input on
+  the way back in; "we wrote the API" is not validation.
+- CR-2.7: closed sets are string-literal unions or `as const` maps, never
+  loose strings in a template.
+- CR-2.8: the validation library (Zod/Valibot) is imported by the api-client
+  and the form layer only. Components and domain modules never import it.
+- CR-2.9: `defineProps<T>()` and `defineEmits<T>()` in TYPE form, never the
+  runtime-array form — the type IS the boundary signature
+  [auto: vue/valid-define-props, vue/valid-define-emits,
+  vue/require-explicit-emits].
+- CR-2.10: `catch (e: unknown)`; narrow before use. An error swallowed into a
+  console line is swallowed (CR-5.4).
+- CR-2.11: no `null` return where an error belongs. An empty list and a failed
+  load are different states and render differently (CR-2.13).
+- CR-2.12: props are readonly by contract [auto: vue/no-mutating-props];
+  `readonly` on store state exposed to components; `shallowRef` where deep
+  reactivity is not needed.
+- CR-2.13: async status is ONE discriminated union — idle/loading/success/
+  error with a tag. Parallel `isLoading`/`isError`/`data` booleans are the
+  banned form, and they are what most tutorials show.
+- CR-2.15: recoverable failures return `Result<T, E>` from the api-client
+  layer; throw only for programmer errors. The component never sees a thrown
+  transport failure — it sees an error variant it must render.
+- CR-2.16: types derive from the schema (`z.infer`); never a schema and an
+  interface declared side by side; never `(await res.json()) as T`.
+- CR-2.17: named types for props, emits, and api payloads; derive with
+  Pick/Omit/Partial rather than re-typing fields.
+
+Testing — CR-3.1 CR-3.2 CR-3.3 CR-3.4 CR-3.5 CR-3.6 CR-3.7 CR-3.8 as stated
+in master (the proof line applies verbatim — captured RED, then GREEN):
+- CR-3.7: assert through rendered output and emitted events. A test that
+  reaches into `wrapper.vm` to read internals is testing structure; a test
+  that asserts on CSS class names couples to styling. Query by role and
+  accessible name where the testing library allows it.
+- CR-3.9: mock the network boundary (MSW or a stubbed port), never the
+  composable under test and never child components. Stubbing a child to make
+  a test pass hides the integration the test existed to check.
+- CR-3.10: names describe behavior. Error and empty states are tested, not
+  only the happy path — CR-2.13's union has a variant per test.
+- CR-3.11: `vi.useFakeTimers()` for debounce and polling; injected clock;
+  seeded randomness; never `await sleep(100)` to wait for a re-render — await
+  the framework's flush instead.
+- CR-3.12: unit tests for pure domain modules; component tests for a
+  component plus its real composables; Playwright for the request lifecycle
+  through a real browser.
+
+IO & resilience:
+- CR-4.1: every fetch carries `AbortSignal.timeout(ms)` or an explicit
+  controller. A request with no bound is an infinite spinner with extra steps.
+- CR-4.2: each call names what the caller receives on failure — which variant
+  of the CR-2.13 union, with a typed cause.
+- CR-4.3: the single boundary-validation rule. Schema-parse every response,
+  every route param, every storage read. See CR-2.6 for the inventory.
+- CR-4.4 CR-4.5: retry only transient failures; a 4xx business rejection is
+  terminal and retrying it is a correctness bug. Full jitter
+  `Math.random() * Math.min(base * 2 ** n, max)`; max attempts named. Mutations
+  carry an idempotency key when the server accepts one (CR-6.10).
+- CR-4.6 [advisory] as stated.
+- CR-4.7: `AbortController` for cancellation, released in `onScopeDispose` /
+  `onUnmounted`. EVERY subscription, listener, timer, observer and socket is
+  torn down with the scope that created it — acquisition and release in the
+  same scope. `watch` registered after an `await` is not tied to the scope and
+  leaks [auto: vue/no-watch-after-await].
+- CR-4.8: `Promise.all` vs `allSettled` across parallel loads is a recorded
+  decision; partial failure renders as partial, not as total failure.
+
+Runtime mechanics:
+- CR-5.1: `performance.now()` for durations, `Date` for instants. Server
+  timestamps arrive as ISO 8601 with offset and are formatted for display at
+  the edge only — never stored formatted. `Intl` for locale rendering.
+- CR-5.2: money as integer minor units or a decimal library, formatted with
+  `Intl.NumberFormat`; `Number.isFinite` at boundaries.
+- CR-5.3 CR-5.5 as stated in master.
+- CR-5.4: no `console.log` in committed code [auto]. A structured logger
+  behind a port; errors reported to the tracker with the payload scrubbed
+  (CR-8.5). No PII and no tokens in breadcrumbs.
+- CR-5.6: ESM only; `import type` for types; no deep-reach imports into
+  another feature's internals — a feature exposes a module entry point.
+
+Service layer — reinterpreted for a consumer rather than a server:
+- CR-6.1: the component is the handler layer. No business logic in the
+  template, no transport in the component (CR-1.1).
+- CR-6.2: every composable returns an explicit typed shape — the CR-2.13
+  union plus its actions. No bare `any`-shaped reactive blobs.
+- CR-6.3: ONE centralized failure→variant mapping point in the api-client;
+  components never `try/catch` a call to map it for display. The mapping is
+  the client-side dual of status-code mapping, and it is centralized for the
+  same reason.
+- CR-6.4: cross-cutting concerns are plugins, router guards, or provided
+  services; a component never constructs an api-client.
+- CR-6.5: when CALLING an API — identity in path params, filter/pagination in
+  query, mutations in the body. A GET that mutates is a defect on both sides.
+- CR-6.6: nothing grows without a ceiling. Infinite lists, event feeds, log
+  views, notification arrays and undo stacks each declare a high-water mark
+  AND the policy at it — window, drop-oldest, or pause. DOM node count is an
+  accumulator too: past the mark, virtualize.
+- CR-6.7: no blocking work on the main thread. A parse or transform that
+  exceeds a frame budget moves to a Web Worker; there is no synchronous IO
+  worth the jank.
+- CR-6.8: fire-and-forget is for telemetry only. Anything the user must know
+  succeeded is awaited and rendered (CR-2.13).
+- CR-6.9: the client's version of "a state change and its dependent effect" is
+  the optimistic update. The pre-mutation snapshot is captured BEFORE the
+  optimistic patch, rollback is declared with the mutation rather than
+  improvised in a catch, and on settle the server's truth wins over the
+  optimistic guess.
+- CR-6.10: every mutation is safe to repeat. Submit is guarded by state while
+  in flight — not by a disabled attribute, which a double-click can beat.
+- CR-6.11: two concurrent READS of the same logical resource resolve by KEY
+  comparison, not arrival order; the superseded response is discarded. This
+  policy is for reads only: applied to submits, latest-wins is lost writes.
+
+Data access:
+- CR-7.7: persisted client state (drafts, wizard progress, resumable upload
+  manifests) is written atomically — one IndexedDB transaction, or write a new
+  versioned key and swap the pointer. A tab closed mid-write never leaves a
+  half-written draft that crashes the next load. Persisted state carries a
+  schema version and a TTL, and version-mismatch has a named policy: migrate,
+  discard with notice, or offer recovery. Silent resurrection of a stale draft
+  is the forbidden form.
+
+Security — read the governing inversion at the top of this file first:
+- CR-8.1: length limits at the form boundary and in the schema. UX, not
+  enforcement; the server repeats every one of them.
+- CR-8.5: THE rule that binds hardest here. The bundle is published: anything
+  reaching `import.meta.env` in client code is public, whatever it is named.
+  Token storage is a RECORDED decision — httpOnly cookie or in memory;
+  `localStorage` is rejected by default and requires a written justification
+  naming the XSS exposure it accepts. Tokens never appear in URLs, logs, or
+  error-tracker payloads. The ceiling is a BFF that keeps the token out of the
+  browser entirely.
+- CR-8.8: a URL from untrusted data is scheme-allowlisted before it becomes an
+  `:href` or `:src`. `javascript:` and `data:` are the live sinks; an
+  open-redirect parameter is the recurring bug.
+
+Observability:
+- CR-9.1: a correlation id per request, sent as a header and included in
+  client-side error reports, so a user-reported failure joins the server's log
+  line for the same request.
+- CR-9.3 [advisory]: Core Web Vitals and error rate rather than server
+  metrics.
+- CR-9.4: wherever CR-6.6 declares a bound, a counter exists for what was
+  dropped. A silently truncated feed reads as an empty feed.
+
+Versioning & contracts:
+- CR-10.1: the client pins the API version it speaks; an unrecognized response
+  shape fails as a typed error (CR-4.3), never as a silent partial render.
+- CR-10.2: persisted client contracts — draft schemas, storage keys, URL query
+  parameters that users bookmark — never change silently. Bump the version and
+  ship the migration (CR-7.7).
+
+Hygiene:
+- CR-11.1: errors surface as a rendered variant of the CR-2.13 union with an
+  actionable message. Stack traces and raw server payloads are never shown to
+  a user.
+- CR-11.2: unmount is this runtime's SIGTERM. On scope disposal, in-flight
+  requests abort, subscriptions release, and timers clear (CR-4.7). The
+  additional case with no server analogue: on tab close, work that must not be
+  lost is already persisted (CR-7.7), because there is no drain deadline.
+
+Generation density — CR-13.2 CR-13.3 CR-13.5 as stated in master:
+- CR-13.1 idiom: no wrapper component that only forwards props and slots; no
+  composable with one caller that names nothing the call site cannot; no store
+  for state one component owns; no `index.ts` barrel that only re-exports.
+  A `ui_local` concern — open/closed, hover, focus — promoted into a global
+  store is the recurring density failure on this side.
+- CR-13.4 exemplar: EXEMPLAR SLOT — OWED. No file in this codebase is old
+  enough to anchor density review. Name one component-plus-composable pair
+  (typed props, one CR-2.13 union, a real port, no ceremony) once Phase 4
+  produces a screen worth pointing at; until then, anchor on the master text.
+
+## Language-only rules
+
+Vue-runtime obligations with no master analogue. These are the reason this
+binding exists separately from binding-typescript.
+
+- V-1 [review, partial auto: vue/no-arrow-functions-in-watch] Derive, do not
+  synchronize. If a value is computable from existing state it is a `computed`,
+  never a `ref` kept in step by a `watch`. A watcher whose body copies one
+  reactive container into another is the banned form — deleting the copy should
+  break nothing but the copy. `watch` is for EFFECTS (fetch, focus, persist),
+  not for data flow. Two sources of truth for one fact is the underlying defect
+  and it does not stop at reactivity.
+
+- V-2 [auto: vue/no-ref-as-operand, vue/no-ref-object-reactivity-loss,
+  vue/no-setup-props-reactivity-loss] Reactivity survives the operation.
+  Reactivity is lost by VALUE EXTRACTION, and Vue 3.5 changed where that line
+  falls — state it in 3.5 terms, not from older habit:
+  - Destructuring `defineProps()` IS reactive in 3.5+; the compiler rewrites
+    the access. It is NOT a defect and must not be linted as one.
+  - But a destructured prop passed INTO a function loses it: `watch(foo, …)`
+    and `useThing(foo)` pass a value. Pass a getter — `watch(() => foo, …)`,
+    `useThing(() => foo)`.
+  - Destructuring a `reactive()` object still yields plain values. Prefer
+    `ref`/`computed`; reach for `toRefs` where a reactive object must be
+    spread.
+  - Reading `.value` into a local, then depending on the local, freezes it.
+  Version note: this rule is written against Vue 3.5. Revisit it on a major
+  bump — the mechanism moved once and can move again (CR-10.2 applied to this
+  file).
+
+- V-3 [review] Template sinks are validated at the sink, not upstream.
+  `v-html` takes only values the application produced or a sanitizer returned;
+  user or server content reaches it never. Dynamic `:href`/`:src`, dynamic
+  `<component :is>` from data, and any injected `<style>` are the other sinks.
+  CR-4.3 validated the SHAPE at the boundary; shape is not safety, and this is
+  the one place a re-check is not CR-13.3's redundant defense.
+
+- V-4 [review] Perceivable transitions are shaped deliberately. Route change
+  and modal open/close move focus on purpose; a modal traps focus and restores
+  it on close. Async outcomes are announced through a live region, not rendered
+  visually only. Every pointer path has a keyboard path. See the toolchain
+  OWED: no a11y linter is named yet, so this reads at [review].
+
+- V-5 [auto: vue/require-v-for-key] Identity is explicit. `v-for` binds a
+  stable domain key — never the array index where the list reorders, filters,
+  or receives insertions, because index keys make Vue reuse the wrong DOM node
+  and carry stale component state into it. `v-if` and `v-for` never share an
+  element.
+
+- V-6 [review] URL owns what must survive a refresh. Filters, sort, page and
+  selected id live in the URL, validated on entry (CR-4.3), so refresh
+  reproduces the view, deep links work cold, and back is semantic. One owner
+  per fact: a component-local copy of a route param synced back by a watcher is
+  V-1's violation wearing routing clothes.
+
+- V-7 [review] A client cache key carries its scope. Any key under which
+  server data is cached includes the principal or tenant AND every parameter
+  that changes the result. An identity change — login, logout, account switch —
+  clears or partitions those entries. A cache surviving logout serves the
+  previous user's data to the next one, and it is the failure no library
+  prevents for you.
+
+## Stack section: Pinia + Vue Router (delete if not used)
+
+- S.1 [review] A store is for state with more than one owner. State one
+  component owns stays in the component (CR-13.1); server data belongs to the
+  fetching/caching layer, not copied into a store beside it (V-1).
+- S.2 [review] Stores expose readonly state plus actions. A component
+  mutating `store.someArray` directly is CR-1.4's shared-mutable-state
+  violation with a nicer syntax.
+- S.3 [review] Router guards are navigation UX and never authorization
+  (see the governing inversion). Every route a guard protects sits in front of
+  an endpoint that independently rejects the unauthorized caller.
+- S.4 [review] Route params and query are validated on entry (CR-4.3) before
+  becoming cache keys or request arguments (V-6, V-7).
+
+## Corpus cross-reference (delete if not used)
+
+For users of the client archetype/control corpus, these obligations are the
+same relation stated in two vocabularies. The corpus classifies by data-flow
+slice; this file binds by CR token. Where they overlap, the corpus card
+carries the fuller treatment:
+
+  V-1 → CL03    V-2 → (Vue-native, no CL card)    V-3 → (no CL card)
+  V-4 → CL17    V-5 → (Vue-native)                V-6 → CL13
+  V-7 → CL08    CR-2.13 → CL04                    CR-4.1 → CL06
+  CR-4.7 → CL14 CR-6.6 → CL15                     CR-6.9 → CL10
+  CR-6.10 → CL07 CR-6.11 → CL05                   CR-7.7 → CL18
+  CR-8.5 → CL12 CR-8.2/8.3/8.4 → CL11 (the inversion)
+
+## Floor deviations (recorded)
+
+- CR-2.12: template-side prop mutation is caught by lint; deep readonliness of
+  nested store state is review-only.
+- V-4: no accessibility linter named (see toolchain OWED), so the whole rule
+  reads [review] where part of it should be [auto].
+- CR-13.4: exemplar OWED — no codebase yet.
+
+## not_applicable
+
+Browser-runtime SPA. These master rules bind on the SERVER side of this
+system (binding-python / binding-typescript), not here:
+
+- CR-6.9 partial: no database transaction exists in this runtime. The rule is
+  bound above in its client form (optimistic update + rollback); the
+  transactional-outbox mechanism itself is the server's.
+- CR-7.1 CR-7.2 CR-7.3 CR-7.4 CR-7.5 CR-7.6: no SQL layer, no connection pool,
+  no transactions in a browser. Client-side sorting and filtering of an
+  already-fetched page is not the injection surface CR-7.2 exists for; when
+  sort or filter is sent to the server, the whitelist is the server's
+  obligation. (CR-7.7 DOES bind — see above.)
+- CR-8.2 CR-8.3 CR-8.4: auth checks, CORS allowlists and rate limits are
+  server obligations by definition. A client cannot enforce any of them, and
+  code that appears to is the confident-decorative-security failure named at
+  the top. CR-8.2's client-side shadow — hiding a control the user may not use
+  — is UX and is covered by S.3.
+- CR-8.6 CR-8.7: no filesystem paths, no subprocesses. A File from an
+  `<input>` is not a path.
+- CR-8.9: webhook signature verification happens where webhooks arrive, which
+  is never the browser.
+- CR-9.2: health and readiness endpoints are exposed by services, not by a
+  page.
+- CR-10.3: sunset headers are emitted by an API. The client READS them, which
+  is CR-4.3's job.
+- CR-11.2 partial: no SIGTERM in a browser tab. Bound above in its runtime
+  form — scope disposal and tab close.
+- CR-12.1 CR-12.2 CR-12.3 CR-12.4 CR-12.5: not a command-line tool. Build
+  scripts and codegen in the same repository ARE CLIs and load
+  binding-typescript for §12.
+- CR-P.1 CR-P.2 CR-P.3: no direct database access from a browser.

@@ -79,11 +79,26 @@ foreach ($dst in 'C:\Users\Vidma\.claude\skills\coding-rules',
 }
 ```
 
-Verify agreement afterwards; expect output only for the three extra bindings the
-personal copy carries:
+**`SKILL.md` now carries a LOCAL DELTA** — a router entry for `binding-vue.txt`,
+which does not exist upstream. The `Copy-Item` above would silently delete it and
+make the Vue binding unreachable. After any upstream re-copy, re-add the router
+line to **both** copies, or the binding is inert with no error to say so.
+
+Verify agreement afterwards. Both copies should now be identical except for the
+three bindings only the personal copy carries:
 
 ```powershell
 diff -rq C:\Users\Vidma\.claude\skills\coding-rules C:\darbas4\learn_vue\.claude\skills\coding-rules
+```
+
+Also re-run the master's own projection check after any binding edit — it is
+mechanical and catches a stale binding immediately:
+
+```bash
+cd .claude/skills/coding-rules
+grep -oE 'CR-[0-9]+\.[0-9]+' coding-rules-master.txt | sort -u > /tmp/m
+grep -oE 'CR-[0-9]+\.[0-9]+' binding-vue.txt          | sort -u > /tmp/b
+diff /tmp/m /tmp/b   # must be empty; 101 tokens as of master v0.4
 ```
 
 Upstream clones at `C:\darbas4\{coding-rules,mattpocock-skills}` are read-only

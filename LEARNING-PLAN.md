@@ -241,12 +241,18 @@ components are writable without conscious effort, so rigor has capacity to land.
     impossibilities.
   - Fill the **CR-13.4 exemplar slot** with a real file from this codebase.
 - Retrofit the existing application toward the rules; do not rewrite it wholesale.
-- **Write `binding-vue.txt`** — a defined work item, not an aspiration. The
-  client catalog is framework-neutral *by design* and states that Vue-specific
-  forbidden lists belong in `coding-rules` per stack, naming the two it expects:
-  reactivity loss via destructuring, and gratuitous deep watchers. By this phase
-  you will have hit both. This is the contribution back that `RESOURCES.md`
-  flagged, now with a specification.
+- **Revise `binding-vue.txt` from experience.** It already exists — written
+  2026-07-31 at v0.1, ahead of this phase, so it is derived from the master and
+  the corpus rather than from code. That is its weakness and this phase is the
+  fix. Three specific jobs:
+  - Fill its **CR-13.4 exemplar slot**, currently OWED. Name the
+    component-plus-composable pair from Phase 4 worth anchoring density on.
+  - Promote **V-4** from `[review]` to `[auto]` by naming a working
+    accessibility linter — recorded as OWED in its toolchain block because the
+    package identity was not verified at authoring time.
+  - Delete what did not earn its place. A rule that never fired in six months
+    of real work is a rule written from imagination, and §13 applies to
+    rulesets too.
 - **The control cards hand you test names.** Each carries `proof.tests` — C15's
   are `forbidden_actor_rejected` and `ownership_changed_before_write_rejected`;
   CL10's include `retry_does_not_double_apply`. Test-first is easier when the
