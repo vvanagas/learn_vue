@@ -78,6 +78,55 @@ on 2026-07-30 rather than recalled, because community links rot fastest.
   Use for: `coding-rules-master.txt` for the obligations, `binding-typescript.txt`
   for TypeScript mechanism. Phases in from Phase 6 per the mission's constraints.
 
+### Archetype / control corpus — private, Box `shared/golden/`
+
+Own work, not a published source. A rule system, not prose: each **control**
+is a trigger-bound obligation with a `floor` (when it is overkill), a `ceiling`
+(when to reach for a real system instead), `required`, `forbidden`, and named
+`proof` tests. Each **archetype** carries default / conditional / forbidden
+control sets. Read the catalog for the obligation and the map for the
+attachment — the corpus is strict that each relation has exactly one home.
+
+Highest-trust material available for Phases 4-6, because it was written against
+recurrence in real systems (a control earns inclusion at "seen more than twice,
+not merely conceivable") and it records its own rejections and gaps.
+
+**Client side — Phases 3-4:**
+
+- `client-controls.txt` (CL01-CL18)
+  Use for: the obligations of a Vue slice. CL03 derive-don't-synchronize,
+  CL04 typed-async-state, CL05 latest-wins cancellation, CL13 route-as-state.
+  Its governing inversion is the thing to internalise first: the client runs on
+  hardware the adversary controls, so every client check is UX, never
+  enforcement (CL11).
+- `client-archetype-control-map.txt`
+  Use for: classifying a feature. The unit is the **data-flow slice**, not the
+  component — "components are pipeline stages". Seven archetypes:
+  `server_state_mirror`, `form_commander`, `derived_view`, `route_state`,
+  `realtime_subscriber`, `ui_local`, `client_long_task`.
+- `client-web-archetype-fusions.txt`
+  Use for: the three seams where slices meet — `optimistic_mutation`,
+  `live_overlay`, `url_driven_data`. That last one is "the majority of real
+  pages" and is exactly Phase 4's list-and-detail work.
+
+**Server side — Phases 5A/5B:**
+
+- `server-controls.txt` (C01-C58) and `server-archetype-control-map.txt`
+  Use for: the FastAPI half. Your app is `http_crud` + `http_command` +
+  `auth_token`, and the map hands you each card's default set outright. C15
+  ownership-authz-on-fresh-state is the one to read twice.
+- `server-web-archetype-fusions.txt` (Part C) and
+  `server-async-archetype-fusions.txt` (Part D)
+  Use for: endpoints that fuse two archetypes. Four web seams (time, trust,
+  read_write, fan_out) and two async (correlation, compensation). The **trust**
+  seam is Phase 5B's spine.
+
+**Unread, and possibly load-bearing:** `archetype-stage-dissection.txt` (the
+12-stage pipeline the whole corpus is expressed against), `Web-archetype-master.txt`,
+`design_pipeline.txt`. `server-corpus-open-issues.txt` has no text
+representation in Box and could not be read at all — re-save it there if its
+contents matter.
+
 ## Wisdom (Communities)
 
 - [Vue Land — official Discord](https://discord.com/invite/vue)
@@ -100,15 +149,38 @@ any, say so and this section gets an opt-out note instead of new suggestions.
 Areas this mission needs where no vetted resource is recorded yet. This list
 drives the next search — it is not decoration.
 
-- **Vue + JWT auth done properly.** Token storage, refresh flows, and route
-  guards attract a lot of low-quality blog content with genuine security holes
-  (localStorage advice especially). Nothing is listed here until a high-trust
-  source is found. Your existing .NET JWT knowledge is currently the more
-  trustworthy input.
-- **coding-rules has no frontend binding.** Bindings ship for TypeScript, Go,
-  Python and PHP; `binding-typescript.txt` is backend-shaped (Bun + Elysia,
-  Drizzle, route schemas). Nothing there covers components, reactivity or CSS.
-  Its CR-13.4 exemplar slot is also unfilled. Expect to write the frontend
-  interpretation yourself as the project grows — a genuine contribution back.
+- ~~**Vue + JWT auth done properly.**~~ **CLOSED 2026-07-31** by the archetype
+  corpus above, which answers the exact questions the gap named:
+  - *Token storage* — CL12 `no-secret-in-client` forbids
+    `token_in_localStorage_without_recorded_justification`. localStorage is
+    rejected by default; httpOnly cookie or in-memory, and the choice is a
+    recorded decision. Its ceiling is a BFF holding tokens server-side so the
+    token never reaches the browser at all.
+  - *Expiry and refresh* — CL16 `stale-session-reauth`, whose forbidden list
+    names the failures directly: `reauth_losing_unsaved_user_input`,
+    `background_refetch_loop_hammering_with_dead_token`.
+  - *Route guards* — CL11 `client-authz-is-ux` forbids
+    `hiding_the_button_as_enforcement` and
+    `privileged_route_guard_without_server_side_check`. The guard is rendering,
+    never protection.
+  - *Server side* — the `auth_token` card, whose
+    `refresh_token_rotation_or_reuse_detection` trigger attaches C09+C10+C20
+    because two concurrent refreshes with one token is both the canonical race
+    and an attack signal. Plus C15 for authorization on fresh state.
+
+  Existing .NET JWT knowledge stays the sanity check, but it is no longer the
+  *only* trustworthy input.
+- **coding-rules has no frontend binding** — narrowed, not closed. Bindings ship
+  for TypeScript, Go, Python and PHP; `binding-typescript.txt` is backend-shaped
+  (Bun + Elysia, Drizzle, route schemas), and its CR-13.4 exemplar slot is
+  unfilled. The client corpus does **not** fill this: it is deliberately
+  framework-neutral and says so, stating that Vue-specific forbidden lists
+  belong in `coding-rules` per stack. It even names the two it expects —
+  *reactivity loss via destructuring* and *gratuitous deep watchers*. So the
+  gap is now a specified piece of work rather than an open question, and
+  writing `binding-vue.txt` is a genuine contribution back.
+- **Python binding not vendored.** `binding-python.txt` exists in the personal
+  `coding-rules` install but not in this repo's vendored copy. Needed at Phase
+  5A; see `NOTES.md`.
 - **Deployment.** Deliberately unresolved until the application is named; the
   target depends on what gets built.
