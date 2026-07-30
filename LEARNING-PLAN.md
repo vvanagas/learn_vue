@@ -89,10 +89,22 @@ Composition API with `<script setup>` throughout. Options API is read-only.
 - Template syntax, directives, conditional and list rendering, keys.
 - Lifecycle, and composables as the unit of reuse.
 - Typing all of the above — `defineProps<T>()`, typed emits, generic components.
+- **The unit of design is the data-flow slice, not the component.** From the
+  client archetype map (`RESOURCES.md`): components are *pipeline stages*; what
+  you classify is a feature's state-ownership shape — who owns this data, where
+  it lives, what may mutate it. Introduced here rather than at Phase 4 because
+  it contradicts how component-framework tutorials frame the problem, and the
+  component-first habit is expensive to unlearn once drilled.
+- CL03 `derive-don't-synchronize` alongside `computed`: if a value is computable
+  from existing state, it is derived, never copied. Its forbidden list —
+  `effect_or_watcher_synchronizing_two_state_containers`, `storing_a_derived_value`
+  — names the single most common Vue mistake, and naming it while `watch` is
+  first being learned is cheaper than correcting it in Phase 4.
 
 **Exit criterion:** build a multi-component interactive page from scratch,
-fully typed, with no store and no router, and explain when a value should be
-`ref` versus `computed` versus plain.
+fully typed, with no store and no router; explain when a value should be `ref`
+versus `computed` versus plain; and name which slice archetype each part of the
+page belongs to.
 
 ---
 
@@ -112,13 +124,32 @@ what forces real form work regardless of subject.
 - Pinia: stores, when state belongs in a store versus a component.
 - Forms and validation — traditionally the hardest part of any real frontend.
 - Loading, empty, and error states as first-class design concerns, not
-  afterthoughts.
+  afterthoughts. CL04 makes this mechanical: model async status as a
+  discriminated union, and require that *every* variant renders — no infinite
+  spinner, no error swallowed to console.
 - Component library decision point: PrimeVue (its MCP server is already
   connected) versus hand-rolled. Make it deliberately, after Phase 1 means you
   *can* hand-roll — so the choice is convenience, not avoidance.
 
+**The corpus supplies this phase's vocabulary** (`RESOURCES.md`). Each screen
+gets classified before it gets built:
+
+- The seven client slice archetypes — `server_state_mirror`, `form_commander`,
+  `derived_view`, `route_state`, `realtime_subscriber`, `ui_local`,
+  `client_long_task`. `ui_local` exists to give the floor a name: its forbidden
+  list *is* its content, and the recurring failure is promotion — ephemeral
+  state hoisted into a global store.
+- **`url_driven_data` is this phase's seam.** The client fusion doc calls it
+  "the majority of real pages": route params select which server data renders.
+  Every bug in it is a second owner of one fact — a component-local copy of the
+  params, or a cache key built from stale props. Learn it as the default shape
+  of a list-and-detail screen, not as an advanced topic.
+- `form_commander` forbids CL05 by default: latest-wins is a *read* policy, and
+  applying it to submits is lost writes. That distinction is worth a lesson.
+
 **Exit criterion:** the application has three or more real screens, navigable,
-with shared state and at least one non-trivial validated form.
+with shared state and at least one non-trivial validated form — and each screen
+can be named as a slice archetype, with any seam between two slices identified.
 
 ---
 
@@ -139,6 +170,21 @@ injection, and Postgres — not the architecture.
 - Python typing and `coding-rules`' `binding-python.txt` read for orientation,
   not yet enforced — rules still phase in at Phase 6.
 
+**The corpus gives this phase its control sets outright** (`RESOURCES.md`). The
+app is three server archetypes — `http_crud` (store/retrieve, no invariants),
+`http_command` (mutation with invariants), `auth_token` (issue the credential).
+Pull each card's default set from the map rather than inventing one. Two that
+earn early attention:
+
+- **C15 `ownership-authz-on-fresh-state`** — load the resource, then authorize
+  against the loaded state, inside the transaction if a mutation follows. Its
+  forbidden list is a FastAPI trap list: `route_model_binding_for_command_authz`
+  and `final_ownership_check_in_pre_handler` are exactly what dependency
+  injection makes elegant to write and wrong to rely on.
+- **`auth_token`'s `refresh_token_rotation_or_reuse_detection` trigger** —
+  attaches C09 + C10 + C20, because two concurrent refreshes with one token is
+  simultaneously the canonical race and an attack signal.
+
 **Time-box this.** Every hour past ~80 is an hour stolen from the primary goal.
 An adequate backend serves the mission; an elegant one behind a frontend that
 cannot be built does not.
@@ -156,9 +202,14 @@ returns a token you can decode and see expire.
   it, which makes it diagnosable rather than mystifying).
 - Spending the JWT: login, token storage, refresh on expiry, logout, and route
   guards that actually protect.
-- **Security caution:** this topic attracts poor blog content with real holes.
-  `RESOURCES.md` records it as an open gap deliberately. Existing .NET JWT
-  knowledge is the more trustworthy input here than anything a model recalls.
+- **Security:** this topic attracts poor blog content with real holes. The gap
+  `RESOURCES.md` used to record here is now **closed** by the corpus, which
+  answers it in the same vocabulary the gap was written in — CL12 rejects
+  localStorage by default and names the BFF ceiling; CL16 covers mid-session
+  expiry without losing unsaved input; CL11 makes a route guard *rendering*,
+  never protection, so every privileged action still needs its server check.
+  This whole phase is the corpus's **trust seam** — verify-then-act — whose
+  translation line is the one to memorise: authentication is not authorization.
 - Typed API clients — and the genuine prize of owning both ends: generating
   TypeScript types from FastAPI's OpenAPI schema, so the wire contract is
   checked by the compiler instead of by hope.
@@ -190,6 +241,16 @@ components are writable without conscious effort, so rigor has capacity to land.
     impossibilities.
   - Fill the **CR-13.4 exemplar slot** with a real file from this codebase.
 - Retrofit the existing application toward the rules; do not rewrite it wholesale.
+- **Write `binding-vue.txt`** — a defined work item, not an aspiration. The
+  client catalog is framework-neutral *by design* and states that Vue-specific
+  forbidden lists belong in `coding-rules` per stack, naming the two it expects:
+  reactivity loss via destructuring, and gratuitous deep watchers. By this phase
+  you will have hit both. This is the contribution back that `RESOURCES.md`
+  flagged, now with a specification.
+- **The control cards hand you test names.** Each carries `proof.tests` — C15's
+  are `forbidden_actor_rejected` and `ownership_changed_before_write_rejected`;
+  CL10's include `retry_does_not_double_apply`. Test-first is easier when the
+  test list was written before the code, by someone who had seen the failure.
 
 **Exit criterion:** one new feature built entirely test-first, with the failing
 and passing runs captured in a learning record. Lint and typecheck green.
