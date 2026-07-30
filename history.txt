@@ -1,0 +1,135 @@
+================================================================================
+#1  Bootstrap learn_vue teaching workspace: skill install, mission, plan, repo
+================================================================================
+
+[REQUEST]
+"clone matt pocock teach skill, create requirred folder after reading it"
+Then, after /teach did not resolve: "skill is sitll missing in code. why",
+"im from gui. claude. windows", "maybe wsl related somehow, check".
+Then: "i would like to learn vue. thats maybe wrong mission, got background in
+java (5k lines of code gui apop long time ago), .net crud with jwt and auth.
+9 months 4 hours daily during work days. 20 years unix , perl background,
+regexes. weak on css, html,. gui side. read
+https://github.com/vvanagas/coding-rules . would need you me to help about
+defining mission, then create a new learning plan. and create learn_vue github
+private repo, push all relevant stuff there."
+
+[PLAN]
+1. Clone mattpocock/skills; locate the teach skill (nested, not top-level).
+2. Install teach to ~/.claude/skills/teach/ and diagnose why /teach is missing.
+3. Clone vvanagas/coding-rules; assess fit for a Vue/frontend course.
+4. Interview to convert "learn vue" into a concrete mission (4 blocking questions).
+5. Write MISSION.md, RESOURCES.md, NOTES.md, LEARNING-PLAN.md, learning records.
+6. Vendor coding-rules into .claude/skills/coding-rules/ per its own README.
+7. git init + .gitignore + commit. Push to a private GitHub repo named learn_vue.
+
+Blast Radius: local filesystem only (C:\darbas4\learn_vue, C:\Users\Vidma\.claude\skills\teach)
+  plus, once the user authenticates, one NEW private GitHub repo. No existing
+  repo, service, or system config is modified. settings.json untouched.
+Rollback:
+  Remove-Item -Recurse -Force C:\darbas4\learn_vue, C:\Users\Vidma\.claude\skills\teach
+
+[EXECUTED]
+  # --- Step 1-2: locate and install the teach skill ---
+  git clone --depth 1 https://github.com/mattpocock/skills.git C:\darbas4\mattpocock-skills
+  # → cloned. Skill is NOT top-level; it lives at skills/productivity/teach/
+
+  New-Item -ItemType Directory -Force -Path C:\Users\Vidma\.claude\skills
+  # → created. Test-Path had returned False beforehand — this is the root cause below.
+  Copy-Item -Recurse -Force C:\darbas4\mattpocock-skills\skills\productivity\teach `
+    C:\Users\Vidma\.claude\skills\teach
+  # → SKILL.md, MISSION-FORMAT.md, RESOURCES-FORMAT.md, LEARNING-RECORD-FORMAT.md,
+  #   GLOSSARY-FORMAT.md, agents/openai.yaml
+
+  # --- Diagnosis of "/teach: Unknown command" ---
+  [System.IO.File]::ReadAllBytes('C:\Users\Vidma\.claude\skills\teach\SKILL.md')
+  # → 9647 bytes, first4 = 45,45,45,13 (no BOM, valid '---' frontmatter opener)
+  claude --version
+  # → 2.1.220 (Claude Code) — past every min-version in the skills docs
+  Get-Content C:\Users\Vidma\.claude\settings.json ; Get-Content settings.local.json
+  # → no disabledSkills key in either
+  wsl.exe -l -v
+  # → 7 distros; default podman-machine-default
+  wsl.exe -e sh -lc 'echo HOME=$HOME; ls ~/.claude/skills'
+  # → HOME=/home/user ; "no ~/.claude/skills in WSL"  → WSL ruled out.
+  #   The /home/bst/... paths in settings.local.json are stale allowlist entries
+  #   from earlier Linux use, not evidence this session runs under WSL.
+  # ROOT CAUSE (per code.claude.com/docs/en/skills, "Live change detection"):
+  #   "If you create a top-level skills directory that didn't exist when the
+  #   session started, restart Claude Code so it can watch the new directory."
+  #   ~/.claude/skills did not exist; the watcher was never attached to it.
+
+  # --- Step 3: coding-rules ---
+  git clone --depth 1 https://github.com/vvanagas/coding-rules.git C:\darbas4\coding-rules
+  # → master + bindings for TypeScript/Go/Python/PHP + skills/claude-code/SKILL.md
+  # → ASSESSMENT: no frontend binding exists. binding-typescript.txt is
+  #   backend-shaped (Bun+Elysia, Drizzle, route schemas) and its CR-13.4
+  #   exemplar slot is unfilled. Iron Law of TDD, Result discipline, strict
+  #   tsconfig and §13 anti-slop transfer; components/reactivity/CSS are absent.
+  #   Recorded as a gap in RESOURCES.md rather than papered over.
+
+  # --- Step 4: mission interview (4 questions, answers binding) ---
+  # → Outcome:    ship my own app end-to-end
+  # → Language:   TypeScript from the start
+  # → CSS scope:  deliberate foundations phase first
+  # → Rigor:      coding-rules gradually, after fundamentals
+
+  # --- Resource grounding (skill forbids teaching from parametric knowledge) ---
+  WebSearch "Vue 3 current stable version 2026 Vapor mode release"
+  # → 3.5 stable; 3.6 in beta (3.6.0-beta.16, 2026-06-17), Vapor Mode opt-in,
+  #   possible stable Q4 2026 → Vapor placed OUT OF SCOPE in MISSION.md
+  WebFetch https://vuejs.org/about/community-guide
+  # → verified official community URLs rather than recalling them:
+  #   discord.com/invite/vue, forum.vuejs.org, github.com/vuejs/core/discussions
+
+  # --- Step 5-6: workspace authoring ---
+  Move-Item C:\darbas4\teach-workspace C:\darbas4\learn_vue
+  New-Item -ItemType Directory -Force -Path C:\darbas4\learn_vue\.claude\skills\coding-rules
+  Copy-Item C:\darbas4\coding-rules\skills\claude-code\SKILL.md `
+    C:\darbas4\learn_vue\.claude\skills\coding-rules\SKILL.md
+  Copy-Item C:\darbas4\coding-rules\coding-rules-master.txt, `
+    C:\darbas4\coding-rules\binding-typescript.txt `
+    C:\darbas4\learn_vue\.claude\skills\coding-rules\
+  Copy-Item C:\darbas4\coding-rules\LICENSE `
+    C:\darbas4\learn_vue\.claude\skills\coding-rules\LICENSE-coding-rules
+  # → vendored per coding-rules' own README quick-start (CC BY 4.0 attribution kept)
+
+  # Files authored:
+  #   MISSION.md          — mission + OWED section (application still unnamed)
+  #   LEARNING-PLAN.md    — 7 phases / ~756 h / exit criterion per phase
+  #   RESOURCES.md        — vetted sources + explicit Gaps section
+  #   NOTES.md            — background, environment, standing decisions
+  #   README.md           — repo orientation
+  #   .gitignore          — node_modules, dist, .env (CR-8.5), test artifacts
+  #   learning-records/0001-prior-knowledge-and-the-real-gap.md
+  #   learning-records/0002-mission-established.md
+
+[RESULT]
+Partial success — one step blocked on an action only the user can take.
+
+DONE:
+  - teach skill installed and verified valid (location, encoding, frontmatter).
+  - Root cause of the missing /teach found and documented: the skills directory
+    did not exist at session start, so Claude Code never attached its watcher.
+    Fix is a full app restart (tray icon included), not a new chat.
+  - WSL conclusively ruled out as a cause.
+  - Mission converted from a tool name into a shippable outcome, with the
+    CSS/layout weakness promoted to an explicit success criterion.
+  - 9-month plan written: 7 phases, hour budgets, demonstrable exit criteria.
+  - coding-rules vendored, and its frontend gap recorded honestly.
+
+BLOCKED:
+  - GitHub repo not created. `gh auth status` → "You are not logged into any
+    GitHub hosts." Authenticating handles the user's credentials, so it is not
+    an action to take on their behalf. User must run `gh auth login` first.
+
+OPEN:
+  - MISSION.md carries an OWED section: the application is still unnamed.
+    Three candidates proposed. Plan holds through Phase 3; Phase 4 blocks
+    without it.
+  - CR-13.4 exemplar slot in binding-typescript.txt remains unfilled (expected;
+    it needs a file from a codebase that does not exist yet).
+
+VERIFICATION:
+  git -C C:\darbas4\learn_vue log --stat -1
+  gh repo view learn_vue        # after auth + push; expect visibility: private

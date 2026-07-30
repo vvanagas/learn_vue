@@ -1,0 +1,38 @@
+# Dependencies — reinstallable from lockfiles, and large.
+node_modules/
+.pnp/
+.pnp.js
+
+# Build output from the application built during Phases 4-7.
+dist/
+dist-ssr/
+*.local
+
+# Env files carry secrets (CR-8.5: one secrets mechanism, never committed).
+# .env.example IS committed — it documents required keys without their values.
+.env
+.env.*
+!.env.example
+
+# Editor / OS noise.
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.njsproj
+*.sln
+*.sw?
+
+# Test and coverage artifacts — regenerated, and noisy in diffs.
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+
+# Claude Code local state. .claude/skills/ IS committed on purpose — the
+# vendored coding-rules ruleset is part of the course, not local config.
+.claude/settings.local.json
