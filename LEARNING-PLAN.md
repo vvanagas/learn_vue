@@ -2,20 +2,28 @@
 
 Derived from [MISSION.md](./MISSION.md). If the mission changes, this changes.
 
-**Budget:** ~4 h/weekday × ~21 weekdays/month × 9 months ≈ **756 hours**.
+**Budget:** ~4 h/weekday × ~21 weekdays/month × **10 months** ≈ **816 hours**.
 
-**The backend is not free.** The mission originally assumed an existing
-JWT API to consume. Writing it — FastAPI, Postgres, Docker, token issuance —
-costs roughly **60-80 h** that the 756 did not contain. Two ways to pay:
+**The backend was not free, and the tenth month is how it was paid for.** The
+mission originally assumed an existing JWT API to consume. Writing it — FastAPI,
+Postgres, Docker, token issuance — costs roughly 60 h the original 756 did not
+contain. The alternative was trimming Phases 4-7, which would have squeezed
+Phase 7 (deploy, accessibility, performance) to around 70 h. Extending won:
+foundations stay whole, and shipping keeps its hours.
 
-| Option | Effect |
-|---|---|
-| **Extend to ~10 months** (~816 h) | Foundations untouched. Recommended — Phase 1 is the mission, and trimming it to fund a secondary goal inverts the priority the mission just set. |
-| **Hold 9 months, trim Phases 4-7** | Keeps the calendar. Costs app scope and squeezes Phase 7 (deploy, a11y, perf) to roughly 70 h, which is thin for shipping. |
+| Phase | Hours | Weeks |
+|---|---|---|
+| 1 — The browser layer | 120 | 1-6 |
+| 2 — TypeScript | 80 | 7-10 |
+| 3 — Vue core | 140 | 11-17 |
+| 4 — Shape of an application | 120 | 18-23 |
+| 5A — The backend I own | 80 | 24-27 |
+| 5B — Wiring the two halves | 80 | 28-30 |
+| 6 — Testing + `coding-rules` | 100 | 31-35 |
+| 7 — Ship it | 96 | 36-42 |
+| **Total** | **816** | **~42 weeks** |
 
-**This is a mission-level decision and is not yet made.** The phase hours below
-are written for the extend option. If the 9-month calendar is hard, say so and
-the trim lands in Phases 4-7, never Phase 1.
+Slipping a phase is still normal. The table is a budget, not a schedule.
 
 The ordering is not arbitrary. Vue renders to the DOM and styles it with CSS;
 a learner weak on that layer who starts at Vue cannot tell a Vue problem from a

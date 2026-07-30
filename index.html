@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>learn_vue — lessons</title>
+<!--
+  PLACEHOLDER. Styles are inline here on purpose: assets/ is still empty.
+  When /teach authors the shared stylesheet (assets/style.css), replace this
+  <style> block with a link to it so the index matches the lessons.
+-->
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    max-width: 34rem; margin: 0 auto; padding: 3rem 1.25rem;
+    font: 1rem/1.65 Georgia, 'Times New Roman', serif;
+  }
+  h1 { font-size: 1.5rem; font-weight: normal; margin-bottom: 0.25rem; }
+  .sub { opacity: 0.65; font-size: 0.9rem; margin-top: 0; }
+  ul { padding-left: 1.1rem; }
+  li { margin-bottom: 0.4rem; }
+  .empty {
+    border-left: 3px solid currentColor; padding: 0.6rem 0 0.6rem 1rem;
+    opacity: 0.7; font-size: 0.95rem;
+  }
+  footer { margin-top: 3rem; font-size: 0.85rem; opacity: 0.6; }
+  a { color: inherit; }
+</style>
+</head>
+<body>
+
+<h1>learn_vue</h1>
+<p class="sub">Vue 3 + TypeScript, toward a CRUD admin tool I ship myself.</p>
+
+<h2>Lessons</h2>
+
+<p class="empty">
+  No lessons yet. They land in <code>lessons/</code> as they are written, and
+  get linked here. Run <code>/teach</code> in the workspace to author the first.
+</p>
+
+<h2>The course</h2>
+<ul>
+  <li><a href="MISSION.md">MISSION.md</a> — why this exists</li>
+  <li><a href="LEARNING-PLAN.md">LEARNING-PLAN.md</a> — 7 phases, ~816 hours</li>
+  <li><a href="RESOURCES.md">RESOURCES.md</a> — vetted sources</li>
+</ul>
+
+<footer>
+  Served by GitHub Pages so lessons are readable from a phone.
+  <code>.nojekyll</code> is present deliberately — Jekyll would otherwise
+  interpret Vue's <code>{{ }}</code> syntax as Liquid and mangle every lesson.
+</footer>
+
+</body>
+</html>

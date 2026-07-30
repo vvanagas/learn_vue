@@ -35,9 +35,12 @@ the primary one.
 
 ## Constraints
 
-- **Time:** ~4 hours per weekday for 9 months — on the order of 700-780 hours.
-  Substantial. Enough to build foundations properly rather than route around
-  them, which is why HTML/CSS gets a dedicated phase before any Vue.
+- **Time:** ~4 hours per weekday for **~10 months** — on the order of 800-830
+  hours. Substantial. Enough to build foundations properly rather than route
+  around them, which is why HTML/CSS gets a dedicated phase before any Vue.
+  The tenth month was added deliberately when the backend was adopted: the
+  alternative was trimming the CSS foundations to fund a secondary goal, which
+  would invert the priority this mission exists to set.
 - **Starting point:** strong on backend, data, shell and text processing;
   static-typing instincts from Java and C#. Weak on HTML, CSS and the visual
   layer generally. No modern-JS-ecosystem experience.
