@@ -1,5 +1,7 @@
 # GitHub Actions CI added — as a thread, not a phase
 
+`2026-07-31`
+
 The learner asked for GitHub Actions to be taught as part of the course. It was
 added to [[LEARNING-PLAN.md]] as a ~30 h **thread** woven through Phases 2-7
 rather than as an eighth phase, and one success criterion was added to

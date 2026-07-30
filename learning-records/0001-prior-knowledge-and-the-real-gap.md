@@ -1,5 +1,7 @@
 # Prior knowledge established, and where the real gap sits
 
+`2026-07-30`
+
 Learner disclosed: ~20 years Unix, Perl and regex; one ~5k-line Java GUI
 application (long ago); .NET CRUD services with JWT and auth; static-typing
 instincts from Java and C#. Self-identified weakness: HTML, CSS, and the visual

@@ -1,5 +1,7 @@
 # Mission established: ship an app, not "learn Vue"
 
+`2026-07-30`
+
 The learner arrived with "I would like to learn vue" and immediately suspected
 it was the wrong mission. It was — "learn Vue" names a tool, not an outcome,
 which `MISSION-FORMAT.md` rules out for the same reason it rejects "get fitter".

@@ -191,3 +191,12 @@ grant in either direction.
   no use for it, and the repo is public. Keep updating it at the desk. A cloud
   session clones from GitHub and so cannot see or append to it: phone work
   lands in git, and its ledger entry gets written on the next PC session.
+
+---
+
+NEXT: Author lesson `0001` — Phase 1, the browser layer. Hand-written HTML and
+CSS, no Vue, no build tools. Nothing is blocking it: mission, plan, resources
+and the `Deferred` list above are all settled. `lessons/`, `reference/` and
+`assets/` are empty, so this session also earns the workspace its shared
+stylesheet (`assets/`), which is itself Phase 1 CSS practice. There is no older
+material to retrieve yet — spacing starts at lesson `0002`.

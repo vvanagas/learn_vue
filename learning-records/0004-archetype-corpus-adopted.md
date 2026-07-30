@@ -1,5 +1,7 @@
 # The archetype/control corpus is adopted as the Phase 4-6 knowledge source
 
+`2026-07-31`
+
 The learner has an existing private corpus (Box `shared/golden/`) that is a
 rule system for structuring server and client code: **controls** (trigger-bound
 obligations with floor, ceiling, required, forbidden, and named proof tests)

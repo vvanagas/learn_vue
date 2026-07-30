@@ -1,5 +1,7 @@
 # Application named: CRUD admin tool, on a backend the learner writes
 
+`2026-07-31`
+
 The OWED item from [[0002-mission-established]] is half-closed. The application
 is a **CRUD admin tool with JWT auth** — deliberately the shape already known
 from .NET work, so that novelty concentrates in the browser layer where the
