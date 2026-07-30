@@ -13,7 +13,7 @@ files next to this SKILL.md, or adjust paths). Do BOTH steps now:
    minimum set, and §13 generation density.
 2. Read exactly ONE binding matching the language of the code at hand:
    - TypeScript → `binding-typescript.txt`
-   - Vue SFC    → `binding-vue.txt`  (LOCAL ADDITION — not upstream)
+   - Vue SFC    → `binding-vue.txt`
    - Go         → `binding-go.txt`
    - Python     → `binding-python.txt`
    - PHP        → `binding-php.txt`
@@ -21,8 +21,8 @@ files next to this SKILL.md, or adjust paths). Do BOTH steps now:
    promotions; the master wins on obligation, the binding on mechanism.
    A change spanning two languages loads both bindings.
 
-   `binding-vue.txt` splits from `binding-typescript.txt` by RUNTIME, not by
-   language: browser-side Vue 3.5 SFCs load it, server-side TypeScript keeps
+   `binding-vue.txt` splits from `binding-typescript.txt` by RUNTIME rather
+   than language: browser-side Vue SFCs load it, server-side TypeScript keeps
    `binding-typescript.txt`, and a change touching both loads both.
 
 No binding for the language (shell, SQL-only, …): master-only mode — no

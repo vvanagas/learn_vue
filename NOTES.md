@@ -57,8 +57,8 @@ Max and Team**; the Claude plan has not been checked and this is unverified.
 
 | Copy | Path | Role |
 |---|---|---|
-| Personal | `~/.claude/skills/coding-rules/` | **The one that loads.** Global CLAUDE.md mandates the skill for every project, so it must live here. Carries `binding-{typescript,go,php,python}.txt`. |
-| Vendored | `.claude/skills/coding-rules/` | Portability only — travels with the repo on clone or handoff, and carries the CC BY 4.0 attribution vendoring requires. TypeScript binding only. Inert on this machine. |
+| Personal | `~/.claude/skills/coding-rules/` | **The one that loads.** Global CLAUDE.md mandates the skill for every project, so it must live here. Carries `binding-{typescript,vue,go,php,python}.txt`. |
+| Vendored | `.claude/skills/coding-rules/` | Portability only — travels with the repo on clone or handoff, and carries the CC BY 4.0 attribution vendoring requires. Carries `binding-{typescript,vue}.txt`. Inert on this machine. |
 
 Precedence, per [the skills docs](https://code.claude.com/docs/en/skills): "enterprise
 overrides personal, and personal overrides project." Personal wins — so inside
@@ -75,14 +75,18 @@ $src = 'C:\darbas4\coding-rules'
 foreach ($dst in 'C:\Users\Vidma\.claude\skills\coding-rules',
                  'C:\darbas4\learn_vue\.claude\skills\coding-rules') {
   Copy-Item "$src\skills\claude-code\SKILL.md" "$dst\SKILL.md" -Force
-  Copy-Item "$src\coding-rules-master.txt", "$src\binding-typescript.txt" $dst -Force
+  Copy-Item "$src\coding-rules-master.txt", "$src\binding-typescript.txt",
+            "$src\binding-vue.txt" $dst -Force
 }
 ```
 
-**`SKILL.md` now carries a LOCAL DELTA** — a router entry for `binding-vue.txt`,
-which does not exist upstream. The `Copy-Item` above would silently delete it and
-make the Vue binding unreachable. After any upstream re-copy, re-add the router
-line to **both** copies, or the binding is inert with no error to say so.
+**No local delta remains.** `binding-vue.txt` and its `SKILL.md` router entry
+were upstreamed and merged (`vvanagas/coding-rules` PR #1, commit `af609fe`,
+2026-07-31), so both local copies are now byte-identical to upstream and a
+re-copy is safe. This was deliberate: the alternative was maintaining a
+permanent local divergence that every future pull would silently clobber. If a
+local-only rule is ever needed again, upstream it instead — a fork of one file
+is a drift generator.
 
 Verify agreement afterwards. Both copies should now be identical except for the
 three bindings only the personal copy carries:

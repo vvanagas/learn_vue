@@ -170,7 +170,7 @@ Runtime mechanics:
 - CR-5.2: money as integer minor units or a decimal library, formatted with
   `Intl.NumberFormat`; `Number.isFinite` at boundaries.
 - CR-5.3 CR-5.5 as stated in master.
-- CR-5.4: no `console.log` in committed code [auto]. A structured logger
+- CR-5.4: no `console.log` in committed code [auto: no-console]. A structured logger
   behind a port; errors reported to the tracker with the payload scrubbed
   (CR-8.5). No PII and no tokens in breadcrumbs.
 - CR-5.6: ESM only; `import type` for types; no deep-reach imports into
@@ -263,10 +263,13 @@ Generation density — CR-13.2 CR-13.3 CR-13.5 as stated in master:
   for state one component owns; no `index.ts` barrel that only re-exports.
   A `ui_local` concern — open/closed, hover, focus — promoted into a global
   store is the recurring density failure on this side.
-- CR-13.4 exemplar: EXEMPLAR SLOT — OWED. No file in this codebase is old
-  enough to anchor density review. Name one component-plus-composable pair
-  (typed props, one CR-2.13 union, a real port, no ceremony) once Phase 4
-  produces a screen worth pointing at; until then, anchor on the master text.
+- CR-13.4 exemplar: EXEMPLAR SLOT — name at least one component-plus-composable
+  pair from YOUR codebase (typed props in type form, exactly one CR-2.13 async
+  union, a real injected port, no wrapper ceremony) and anchor density review on
+  it. A pair rather than a single file, because on this side the density failure
+  is usually the SPLIT — a component and its composable that should have been
+  one, or a store that should have been neither. Until one is named, record the
+  gap as OWED per CR-13.4 and anchor on the master rule text alone.
 
 ## Language-only rules
 
@@ -343,20 +346,6 @@ binding exists separately from binding-typescript.
   an endpoint that independently rejects the unauthorized caller.
 - S.4 [review] Route params and query are validated on entry (CR-4.3) before
   becoming cache keys or request arguments (V-6, V-7).
-
-## Corpus cross-reference (delete if not used)
-
-For users of the client archetype/control corpus, these obligations are the
-same relation stated in two vocabularies. The corpus classifies by data-flow
-slice; this file binds by CR token. Where they overlap, the corpus card
-carries the fuller treatment:
-
-  V-1 → CL03    V-2 → (Vue-native, no CL card)    V-3 → (no CL card)
-  V-4 → CL17    V-5 → (Vue-native)                V-6 → CL13
-  V-7 → CL08    CR-2.13 → CL04                    CR-4.1 → CL06
-  CR-4.7 → CL14 CR-6.6 → CL15                     CR-6.9 → CL10
-  CR-6.10 → CL07 CR-6.11 → CL05                   CR-7.7 → CL18
-  CR-8.5 → CL12 CR-8.2/8.3/8.4 → CL11 (the inversion)
 
 ## Floor deviations (recorded)
 

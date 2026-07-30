@@ -171,11 +171,14 @@ drives the next search — it is not decoration.
   Existing .NET JWT knowledge stays the sanity check, but it is no longer the
   *only* trustworthy input.
 - ~~**coding-rules has no frontend binding.**~~ **CLOSED 2026-07-31** —
-  `binding-vue.txt` v0.1 written and vendored to
-  `.claude/skills/coding-rules/`, passing the master's projection check (101
-  CR tokens, empty diff). Splits from `binding-typescript.txt` by *runtime*
-  rather than language: browser-side Vue loads it, server-side TypeScript keeps
-  the original, a change touching both loads both.
+  `binding-vue.txt` v0.1 written, and **merged upstream** into
+  [vvanagas/coding-rules](https://github.com/vvanagas/coding-rules) as PR #1
+  (`af609fe`). It is no longer a local addition: it ships with the ruleset for
+  everyone, and the local copies are byte-identical to upstream. Passes the
+  master's projection check (101 CR tokens, empty diff). Splits from
+  `binding-typescript.txt` by *runtime* rather than language: browser-side Vue
+  loads it, server-side TypeScript keeps the original, a change touching both
+  loads both.
 
   Two residuals remain, tracked in the binding's own `Floor deviations` block
   rather than here: its **CR-13.4 exemplar slot is OWED** (no codebase yet to
