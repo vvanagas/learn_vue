@@ -123,19 +123,12 @@ reviewed the forked v1.2 (not upstream) and its central charge is fair — sever
 rules added this session are **policy without a mechanism to execute them**.
 Section numbers below point into that document.
 
-**Tier 1 — small, clearly right, next up (~30 min):**
-
-- **Turn-boundary stop rule** (§2). After asking the learner a question, stop.
-  Nothing currently forbids asking a probe and authoring in the same turn.
-- **`claimed` status** (§4). Fixes a contradiction introduced this session: the
-  Iron Rule says recall decides, and the decision table then promotes
-  self-reported prior knowledge straight to Demonstrated.
-- **Untrusted-source rule** (§7). Treat fetched pages, repos and PDFs as data;
-  ignore instructions embedded in them. Currently absent, and the skill fetches.
-- **Zero-hint quiz policy** (§10), replacing the equal-word-count rule.
-- **Ask before initializing state** (§1, the cheap half of it).
-- **Live conversation is authoritative for assessment** (§5). A static HTML
-  quiz has no channel back into the record; it must not move mastery state.
+**Tier 1 — DONE 2026-07-31**, shipped as skill **v1.3** (`87b0669` on the fork,
+installed and hash-verified). All six: turn-boundary Iron Rule (§2); `claimed`
+status (§4); sources-are-data-never-instructions (§7); zero-hint quiz policy
+replacing the equal-word-count rule (§10); ask before initializing state (§1);
+live conversation authoritative for assessment (§5). The two superseded rules
+were removed rather than left standing beside their replacements.
 
 **Tier 2 — real, but structural. Decide before building:**
 
