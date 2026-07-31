@@ -215,11 +215,13 @@ enforcement model, not a rule — so it wants deciding rather than drafting.
 - **`CR-13.4` exemplar slots are OWED** in both `binding-vue.txt` and
   `binding-typescript.txt`. They need a real file from this codebase, which is
   why they could not be filled early (#7).
-- ~~**`V-4` reads `[review]`**~~ — **resolved 2026-07-31**, pending merge of
-  [coding-rules#2](https://github.com/vvanagas/coding-rules/pull/2). Both
-  packages verified against npm; V-4 now splits by what a tool can see, static
-  half `[auto]` and behavioural half `[review]`. Merging closes it; until then
-  the local copies still carry the OWED, deliberately, to avoid divergence.
+- ~~**`V-4` reads `[review]`**~~ — **CLOSED 2026-07-31**.
+  [coding-rules#2](https://github.com/vvanagas/coding-rules/pull/2) merged as
+  `aea1df6`; both local copies re-synced from upstream and hash-verified, so no
+  divergence was created. V-4 now splits by what a tool can see: static half
+  `[auto: eslint-plugin-vuejs-accessibility]`, behavioural half `[review]`
+  discharged by `@axe-core/playwright` plus explicit focus assertions. What
+  remains at Phase 6 is *using* them, not deciding them.
 - **Reconcile CR-7.5's "migrations are forward-only" with "every migration has
   a tested `down` path"** (see Phase 5A). Reconcilable, currently unstated.
 

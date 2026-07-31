@@ -50,10 +50,22 @@ Test runner: Vitest + @vue/test-utils; Playwright for E2E      → CR-3.11 CR-3.
 Rules promoted above are [auto]; a red linter is the violation. Everything
 else below is [review].
 
-OWED: no accessibility linter is named here. An eslint a11y plugin for Vue
-exists but its current package identity was not verified when this file was
-written, so it is recorded as a gap rather than cited wrongly (CR-13.4's
-convention applied to toolchain). V-4 reads at [review] until it is named.
+eslint-plugin-vuejs-accessibility (flat config, recommended):
+  static template a11y — alt text, label association, valid ARIA
+  roles/attributes, interactive-element semantics                → V-4 (part)
+
+Accessibility splits across two tools because one of them cannot see the other
+half. The lint plugin reads templates, so it catches what is wrong in the
+markup. It cannot see focus movement, focus restoration, or whether anything was
+announced — those exist only at runtime. So V-4's static half is [auto] and its
+behavioural half stays [review], discharged by a11y assertions in the E2E layer
+(@axe-core/playwright against a real browser, per CR-3.12). Naming the linter
+does not close V-4; it closes the part a linter can close.
+
+Verified 2026-07-31: eslint-plugin-vuejs-accessibility 2.5.0 (MIT, vue-a11y),
+@axe-core/playwright 4.12.1 (MPL-2.0, Deque — a dev dependency, so its
+file-level copyleft does not reach application code). Re-verify before a major
+bump; this file names versions so a reader knows what to re-check against.
 
 ## Bindings (mechanism + idiom per master rule)
 
@@ -308,11 +320,22 @@ binding exists separately from binding-typescript.
   CR-4.3 validated the SHAPE at the boundary; shape is not safety, and this is
   the one place a re-check is not CR-13.3's redundant defense.
 
-- V-4 [review] Perceivable transitions are shaped deliberately. Route change
-  and modal open/close move focus on purpose; a modal traps focus and restores
-  it on close. Async outcomes are announced through a live region, not rendered
-  visually only. Every pointer path has a keyboard path. See the toolchain
-  OWED: no a11y linter is named yet, so this reads at [review].
+- V-4 [auto: eslint-plugin-vuejs-accessibility, for the static half only;
+  [review] for the rest] Perceivable transitions are shaped deliberately.
+  - **Static, and linted:** every image carries alt text or is explicitly
+    decorative, every control has an accessible name, ARIA roles and attributes
+    are valid, and anything clickable is a real interactive element rather than
+    a `div` with a handler.
+  - **Behavioural, and NOT linted — this is the half that matters most:** route
+    change and modal open/close move focus on purpose; a modal traps focus and
+    restores it on close; async outcomes are announced through a live region
+    rather than rendered visually only; every pointer path has a keyboard path.
+    A green a11y linter says nothing about any of these. Discharge them with
+    assertions in the E2E layer (@axe-core/playwright plus explicit focus and
+    live-region checks), never by pointing at the lint run.
+  The split is the point: a11y tooling scores well on markup and is blind to
+  interaction, so a project that lints and stops has automated the easy half and
+  declared the hard half done.
 
 - V-5 [auto: vue/require-v-for-key] Identity is explicit. `v-for` binds a
   stable domain key — never the array index where the list reorders, filters,
@@ -351,8 +374,9 @@ binding exists separately from binding-typescript.
 
 - CR-2.12: template-side prop mutation is caught by lint; deep readonliness of
   nested store state is review-only.
-- V-4: no accessibility linter named (see toolchain OWED), so the whole rule
-  reads [review] where part of it should be [auto].
+- V-4: only the static half is machine-checkable. Focus movement, focus
+  restoration and live-region announcement have no linter and are [review],
+  discharged by E2E assertions. This is a floor of the tooling, not of the rule.
 - CR-13.4: exemplar OWED — no codebase yet.
 
 ## not_applicable
