@@ -8,6 +8,7 @@ trigger: Before Phase 4 design work leans on stage vocabulary; archetype-stage-d
 owner: learn_vue
 tags: [corpus, reading]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
+evidence: { class: REPORTED, at: 2026-07-31, basis: "the files are unread; their importance is asserted by other corpus files that cite them" }
 ---
 
 # Read the remaining corpus files

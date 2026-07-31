@@ -8,6 +8,7 @@ trigger: When the Phase 2 CI thread starts — build it in learn_vue first, not 
 owner: learn_vue (proposal); coding-rules only once it has earned it
 tags: [coding-rules, enforcement, ci, decision]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
+evidence: { class: DERIVED, at: 2026-07-31, basis: "the two binding-vue misses were observed; that a third tier is the fix is concluded, not tested" }
 ---
 
 # A Tier-2 enforcement tier for coding-rules

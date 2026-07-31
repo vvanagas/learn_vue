@@ -8,6 +8,7 @@ trigger: When a real performance symptom appears — probably the first list scr
 owner: learn_vue
 tags: [performance, phase-7, reading]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
+evidence: { class: REPORTED, at: 2026-07-31, basis: "the pack is unread by choice; the Core Web Vitals framing comes from its titles, not its text" }
 ---
 
 # Read the performance pack

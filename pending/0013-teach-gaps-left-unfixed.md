@@ -8,6 +8,7 @@ trigger: Only if real use shows they bite. Neither is a defect; both are design 
 owner: vvanagas/skills (the fork)
 tags: [teach, design]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
+evidence: { class: OBSERVED, at: 2026-07-31, basis: "both gaps are visible in the skill files themselves - no persistence hook, no directory" }
 ---
 
 # Two teach gaps left unfixed on purpose

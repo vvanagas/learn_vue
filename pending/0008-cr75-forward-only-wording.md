@@ -8,6 +8,7 @@ trigger: When the first real migration gets written, Phase 5A.
 owner: coding-rules (as an upstream issue, once the resolution is known)
 tags: [coding-rules, phase-5a, migrations]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
+evidence: { class: OBSERVED, at: 2026-07-31, basis: "both conflicting sentences quoted from their sources; only the resolution is unwritten" }
 ---
 
 # Reconcile CR-7.5 with the tested-down-path rule

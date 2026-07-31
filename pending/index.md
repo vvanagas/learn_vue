@@ -17,22 +17,59 @@ Numbers are creation order and permanent — they get cited from commit messages
 so they never renumber. Priority is not the number. Closing an item means setting
 `state: done` and naming the commit that closed it, never deleting the file.
 
-## Provenance — read before adding `verified:` back
+## Provenance — the `evidence:` field
 
-Every item carried `verified: { by: human:vvanagas, at: 2026-07-31T13:30:00Z }`
-until 2026-07-31. **It was removed from all fourteen, deliberately.** The stamp
-was identical across every file to the second, which means it recorded one
-approval of *building the bundle* while asserting fourteen separate checks of
-individual claims. OKF's `verified` means a claim was checked against its source
-rather than recalled; a batch stamp is the rubber stamp the field exists to
-prevent, and a field that is always present carries no information.
+Every item carries one class for its **load-bearing claim** — the claim that
+decides whether the item still matters — plus the date it was assigned and a
+one-line basis:
 
-Its absence is therefore **information, not an omission.** Do not restore it as
-a missing field.
+```yaml
+evidence: { class: DERIVED, at: 2026-07-31, basis: "…" }
+```
 
-An item earns `verified:` back one at a time, when a named actor has actually
-checked *that item's* claims against *that item's* sources. Until then
-`generated:` alone is the honest frontmatter.
+| Class | Meaning |
+|---|---|
+| `OBSERVED` | Directly verified against the source, at the recorded time. |
+| `DERIVED` | Concluded from named evidence. The reasoning is the exposure. |
+| `REPORTED` | Asserted by another party. Name them. |
+| `ASSUMED` | Not verified. A legitimate, honest value. |
+| `STALE` | Was verified; its freshness window has passed. |
+
+Borrowed from `ctx-handoff` in
+[vvanagas/claude-ops-skills](https://github.com/vvanagas/claude-ops-skills),
+which uses it for handover claims.
+
+**Why a scale and not a `verified:` boolean.** Every item used to carry
+`verified: { by: human:vvanagas, at: 2026-07-31T13:30:00Z }` — one timestamp,
+fourteen files. That recorded a single approval to *build the bundle* while
+asserting fourteen separate checks. It was removed on 2026-07-31 and replaced by
+this.
+
+The failure was structural, not careless. A near-binary field makes the cheap
+answer and the honest answer produce identical text, so there is a gradient
+toward the stamp. A five-class scale removes it: `ASSUMED` is a legal value that
+costs exactly what `OBSERVED` costs to write. Nothing is gained by lying, so the
+field survives contact with a hurried session.
+
+**Reading it:** `ASSUMED` and `STALE` on an item you are about to act on are the
+signal — verify before building on them. `DERIVED` means the reasoning is what
+could be wrong, not the facts. `REPORTED` means someone else's claim you have
+not independently checked.
+
+A class is re-assigned when it is re-checked, and the `at:` date moves with it.
+An `OBSERVED` claim about a moving target becomes `STALE` on its own; it does not
+need anyone's permission.
+
+**Sources are named inline, in the item.** The actual source — Box file, URL,
+npm registry entry, doc section — not a `history.txt` entry number. The ledger
+is git-ignored and desk-only, so an item that cites it is unreadable from a
+clone or a phone, which is where this backlog gets read.
+
+Existing items state *what* and *why* and mostly do not cite *what that rests
+on*. That is a known gap, accepted rather than fixed in bulk: an item gains its
+`## Sources` block when it is picked up, because reconstructing citations for
+work that may never fire is the expensive half of the job with none of the
+payoff. New items carry sources from the start.
 
 **Sources are named inline, in the item.** The actual source — Box file, URL,
 npm registry entry, doc section — not a `history.txt` entry number. The ledger

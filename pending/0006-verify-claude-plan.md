@@ -9,6 +9,7 @@ owner: learn_vue
 tags: [tooling, phone, unverified]
 stale_after: 2026-12-31
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
+evidence: { class: ASSUMED, at: 2026-07-31, basis: "the Claude account plan has never been checked - this item exists because it is unverified" }
 ---
 
 # Verify the Claude plan supports cloud sessions

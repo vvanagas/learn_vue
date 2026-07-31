@@ -8,6 +8,7 @@ trigger: Phase 4 produces the candidate; Phase 6 promotes it.
 owner: learn_vue
 tags: [coding-rules, phase-6, owed]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
+evidence: { class: OBSERVED, at: 2026-07-31, basis: "both bindings read; each carries a literal EXEMPLAR SLOT - OWED" }
 ---
 
 # Fill the CR-13.4 exemplar slots

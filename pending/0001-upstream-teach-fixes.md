@@ -8,6 +8,7 @@ trigger: If upstream mattpocock/skills changes the teach skill — or never; thi
 owner: vvanagas/skills (the fork)
 tags: [teach, upstream, fork]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
+evidence: { class: OBSERVED, at: 2026-07-31, basis: "fork SHAs, upstream main and the teach-path log all re-checked via gh on 2026-07-31" }
 ---
 
 # Upstream the teach skill fixes
@@ -43,6 +44,16 @@ changed since 2026-07-13. So the cost of leaving this alone is currently zero.
 It only becomes work if upstream ships a teach change and the branch needs a
 rebase.
 
-Upstream has **no license**, so GitHub's ToS covers the fork and a PR back and
-nothing further. Check whether upstream wants `agents/openai.yaml` kept in sync
-before opening anything — the last teach commit there was exactly that.
+**Correction, 2026-07-31 (second check).** This item previously said upstream had
+**no license**. That was wrong — it came from a malformed `jq` query that
+reported `license=none` for several repos. `mattpocock/skills` is **MIT**
+(`gh api repos/mattpocock/skills --jq .license`). The fork and a PR back were
+never in question; MIT also permits redistribution and modification, so the
+vendored-copy and derivative-work options that the ToS-only reading ruled out
+are in fact open. Do not re-derive the restriction from the old sentence.
+
+Re-verified the same day: upstream `main` is still `2ab9580` (2026-07-28) and
+the last commit touching `skills/productivity/teach` is `697d4ce`,
+2026-07-13 — the Codex `agents/openai.yaml` metadata pass. So the trigger has
+**not** fired. Check whether upstream wants that file kept in sync before
+opening anything.

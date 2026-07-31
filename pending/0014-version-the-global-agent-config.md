@@ -8,6 +8,7 @@ trigger: Closed 2026-07-31 by 78abd9a in vvanagas/claude-config (private).
 owner: workstation (C:\Users\Vidma\.claude)
 tags: [config, git, risk]
 generated: { by: claude/opus-5, at: 2026-07-31T16:45:00Z }
+evidence: { class: OBSERVED, at: 2026-07-31, basis: "closed by a named commit; the repo, symlink and drift checker were all exercised" }
 ---
 
 # Version the global agent config

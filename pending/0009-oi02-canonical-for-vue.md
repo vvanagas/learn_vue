@@ -8,6 +8,7 @@ trigger: No date. A decision awaiting the corpus owner.
 owner: Box shared/golden (client-corpus-open-issues.txt, OI-02)
 tags: [corpus, binding-vue, decision]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
+evidence: { class: DERIVED, at: 2026-07-31, basis: "the eleven CL-to-CR equivalences were mapped from reading both, not checked card by card" }
 ---
 
 # OI-02 — canonical home for the Vue obligations

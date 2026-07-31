@@ -8,6 +8,7 @@ trigger: Whenever its contents matter — it is the server-side ledger and has n
 owner: Box shared/golden
 tags: [corpus, box, tooling]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
+evidence: { class: OBSERVED, at: 2026-07-31, basis: "the Box connector returned the no-text-representation error twice on file id 2321105658174" }
 ---
 
 # Re-save server-corpus-open-issues.txt
