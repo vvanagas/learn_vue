@@ -38,77 +38,21 @@ weakness is *below* Vue, not in it.
 - GitHub account plan is **Free** (`gh api user --jq .plan.name`). Pages
   therefore needs a public repo; private Pages is Enterprise Cloud only.
 
-### Phone access — two separate problems
+### Phone access
 
-**Reading lessons:** lessons are HTML, and github.com shows HTML as source.
-GitHub Pages over a public repo is the chosen route. Fallbacks if public becomes
-unwelcome: Tailscale to a static server on the Docker box, or a public
-mirror repo holding only `lessons/` and `assets/`.
+Two different problems with different answers — reading lessons (GitHub Pages
+over a public repo; `.nojekyll` is load-bearing) and doing the work (cloud
+sessions run in an isolated VM that clones from GitHub and cannot reach local
+Docker). Full detail, with sources and the one unverified claim, in
+[docs/phone-access.md](./docs/phone-access.md).
 
-**Doing the work:** Claude Code cloud sessions (`claude --cloud`, steer from the
-phone app, `claude --teleport` to pull back to the terminal). Per
-[the docs](https://code.claude.com/docs/en/claude-code-on-the-web): each session
-is an isolated Anthropic-managed VM that clones from **GitHub, not this
-machine** — so push before handing off. It cannot reach local Docker or
-Postgres, and egress is limited by default. It is a research preview for **Pro,
-Max and Team**; the Claude plan has not been checked and this is unverified.
+### `coding-rules` loads from the personal copy, not the vendored one
 
-### `coding-rules` exists in two places — personal shadows vendored
-
-| Copy | Path | Role |
-|---|---|---|
-| Personal | `~/.claude/skills/coding-rules/` | **The one that loads.** Global CLAUDE.md mandates the skill for every project, so it must live here. Carries `binding-{typescript,vue,go,php,python}.txt`. |
-| Vendored | `.claude/skills/coding-rules/` | Portability only — travels with the repo on clone or handoff, and carries the CC BY 4.0 attribution vendoring requires. Carries `binding-{typescript,vue}.txt`. Inert on this machine. |
-
-Precedence, per [the skills docs](https://code.claude.com/docs/en/skills): "enterprise
-overrides personal, and personal overrides project." Personal wins — so inside
-this workspace the vendored copy never loads. Do not read it to find out which
-rules are in force; read `~/.claude/skills/coding-rules/`.
-
-This shadowing is silent. Nothing errors when the two disagree, so a stale
-vendored copy would leave the repo advertising rules that are not the ones being
-enforced. **Any upstream update copies to both targets:**
-
-```powershell
-git -C C:\darbas4\coding-rules pull
-$src = 'C:\darbas4\coding-rules'
-foreach ($dst in 'C:\Users\Vidma\.claude\skills\coding-rules',
-                 'C:\darbas4\learn_vue\.claude\skills\coding-rules') {
-  Copy-Item "$src\skills\claude-code\SKILL.md" "$dst\SKILL.md" -Force
-  Copy-Item "$src\coding-rules-master.txt", "$src\binding-typescript.txt",
-            "$src\binding-vue.txt" $dst -Force
-}
-```
-
-**No local delta remains.** `binding-vue.txt` and its `SKILL.md` router entry
-were upstreamed and merged (`vvanagas/coding-rules` PR #1, commit `af609fe`,
-2026-07-31), so both local copies are now byte-identical to upstream and a
-re-copy is safe. This was deliberate: the alternative was maintaining a
-permanent local divergence that every future pull would silently clobber. If a
-local-only rule is ever needed again, upstream it instead — a fork of one file
-is a drift generator.
-
-Verify agreement afterwards. Both copies should now be identical except for the
-three bindings only the personal copy carries:
-
-```powershell
-diff -rq C:\Users\Vidma\.claude\skills\coding-rules C:\darbas4\learn_vue\.claude\skills\coding-rules
-```
-
-Also re-run the master's own projection check after any binding edit — it is
-mechanical and catches a stale binding immediately:
-
-```bash
-cd .claude/skills/coding-rules
-grep -oE 'CR-[0-9]+\.[0-9]+' coding-rules-master.txt | sort -u > /tmp/m
-grep -oE 'CR-[0-9]+\.[0-9]+' binding-vue.txt          | sort -u > /tmp/b
-diff /tmp/m /tmp/b   # must be empty; 101 tokens as of master v0.4
-```
-
-Upstream clones at `C:\darbas4\{coding-rules,mattpocock-skills}` are read-only
-source, referenced by nothing. `mattpocock-skills` is disposable — one
-`git clone --depth 1` restores it. Keep the `coding-rules` clone; it is the
-update path above.
+Personal overrides project, so `~/.claude/skills/coding-rules/` is the copy that
+is actually in force and the vendored copy in this repo is inert. Do not read
+the vendored one to find out which rules apply. The precedence citation, the
+silent-shadowing hazard, and the two-target update procedure are in
+[docs/coding-rules-precedence.md](./docs/coding-rules-precedence.md).
 
 ## Deferred — see `pending/`
 
