@@ -97,6 +97,10 @@ removed.
 
 ---
 
+Session handover (2026-07-31): [handover.md](./handover.md) — repo SHAs, the
+traps a fresh session hits, and the findings that generalise. Read it before
+re-deriving anything.
+
 NEXT: Author lesson `0001` — Phase 1, the browser layer. Hand-written HTML and
 CSS, no Vue, no build tools. Nothing is blocking it: mission, plan, resources
 and the `Deferred` list above are all settled. `lessons/`, `reference/` and
