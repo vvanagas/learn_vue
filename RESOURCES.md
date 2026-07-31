@@ -5,6 +5,18 @@ for it — a bare link is useless in three months. Community links below were
 verified against the [official Vue community guide](https://vuejs.org/about/community-guide)
 on 2026-07-30 rather than recalled, because community links rot fastest.
 
+**Staleness convention, borrowed from [OKF](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md).**
+`Verified: <date>` means the cited claim was checked against the source on that
+day — not that the URL opened. Where a claim is bound to a version, entries also
+carry `Stale after: <date>`, an **absolute** date rather than a relative TTL.
+The spec's reasoning is the point: an absolute date "keeps the staleness decision
+a plain date comparison with no reference to when the concept was read" — which
+makes it checkable by a script rather than by remembering. That is the concrete
+target for the Tier-2 checks in [pending/0002](./pending/0002-tier2-enforcement-tier.md).
+
+Absent `Stale after:` means the entry is not version-bound, not that it never
+goes stale.
+
 ## Knowledge
 
 ### Phase 1 — the browser layer (HTML/CSS, before any Vue)
@@ -115,10 +127,11 @@ on 2026-07-30 rather than recalled, because community links rot fastest.
 
 - [eslint-plugin-vuejs-accessibility](https://github.com/vue-a11y/eslint-plugin-vuejs-accessibility)
   2.5.0, MIT, published 2026-02-13. Verified against the npm registry
-  2026-07-31. Use for: the **static** half of `binding-vue`'s V-4 — alt text,
+  2026-07-31. Stale after: 2027-02-01 — re-check on any major bump. Use for: the **static** half of `binding-vue`'s V-4 — alt text,
   accessible names, ARIA validity, real interactive elements.
 - [@axe-core/playwright](https://github.com/dequelabs/axe-core-npm)
-  4.12.1, MPL-2.0, published 2026-06-23. Verified 2026-07-31. A dev dependency,
+  4.12.1, MPL-2.0, published 2026-06-23. Verified 2026-07-31.
+  Stale after: 2027-02-01. A dev dependency,
   so its file-level copyleft does not reach application code. Use for: the
   **behavioural** half of V-4, which no linter can see — focus movement, focus
   restoration, live-region announcement. Pair it with explicit focus assertions;

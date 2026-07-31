@@ -110,136 +110,25 @@ source, referenced by nothing. `mattpocock-skills` is disposable — one
 `git clone --depth 1` restores it. Keep the `coding-rules` clone; it is the
 update path above.
 
-## Deferred — not now, but don't lose them
+## Deferred — see `pending/`
 
-Nothing here blocks a lesson. Each item names when it actually comes due, so it
-can be ignored safely until then. Full context lives in `history.txt` at the
-entry noted.
+Open work lives in [pending/](./pending/), an
+[OKF](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md)
+bundle: one file per item, `type: Pending`, with `state` / `trigger` / `owner`
+as producer extensions. Start at [pending/index.md](./pending/index.md).
 
-### `teach` skill v1.3 — from the external review
+It moved out of this file on purpose. `NOTES.md` is read at the **start of every
+session**, so a 130-line backlog of mostly-dormant items was a tax paid every
+time, forever. The index is a dozen lines; the detail is one click away and
+enters context only when someone opens it.
 
-Full review: [docs/teach-skill-review.md](./docs/teach-skill-review.md). It
-reviewed the forked v1.2 (not upstream) and its central charge is fair — several
-rules added this session are **policy without a mechanism to execute them**.
-Section numbers below point into that document.
+Thirteen items, none of them blocking a lesson. The ones that fire soonest:
+`0002` (a Tier-2 enforcement tier — build it in the Phase 2 CI thread), `0005`
+and `0008` (Phase 5A), `0007` (needs real code from Phase 4).
 
-**Tier 1 — DONE 2026-07-31**, shipped as skill **v1.3** (`87b0669` on the fork,
-installed and hash-verified). All six: turn-boundary Iron Rule (§2); `claimed`
-status (§4); sources-are-data-never-instructions (§7); zero-hint quiz policy
-replacing the equal-word-count rule (§10); ask before initializing state (§1);
-live conversation authoritative for assessment (§5). The two superseded rules
-were removed rather than left standing beside their replacements.
-
-**Tier 2 — real, but structural. Decide before building:**
-
-- **Review queue with real scheduling state** (§3, §6) — `last_attempt`,
-  `last_outcome`, `next_due`. This *fixes the dated-records mechanism added this
-  session*, which is broken as designed: creation date is not review state, and
-  oldest-first will keep resurfacing old-but-stable concepts while missing a
-  recently failed one. The largest single change, and the point where `teach`
-  stops being lightweight and becomes a spaced-repetition system with a schema.
-  That is a decision to take deliberately, not to drift into.
-- **Claim-level provenance** (§7) — resource IDs plus locators. "Traces to an
-  entry in `RESOURCES.md`" is bibliography membership, not claim support.
-- **Split `SKILL.md` into `references/`** (§15). It went 9.6 KB → 23.3 KB under
-  this session's edits, mostly rationale that is read once and paid for every
-  turn.
-
-**Tier 3 — larger or needs judgment:**
-
-- **`.teach/` state root + manifest** (§1). Directionally good; a breaking
-  change for every existing workspace, so it needs a migration path and should
-  probably be optional rather than the default.
-- **High-risk domain routing** (§8) — the skill advertises yoga and fitness, and
-  "delegate to a community" is not a safeguard.
-- **`LESSON-FORMAT.md` / `REFERENCE-FORMAT.md`** (§12) — turn "beautiful",
-  "short" and "self-contained" into checkable requirements.
-- **Pedagogy revisions** (§9) — cognitive-load framing instead of the
-  knowledge-vs-skill difficulty rule; worked-example fading; a corrective
-  feedback ladder. **Verify its four citations before adopting them** — adopting
-  unverified sources would break the exact provenance rule the review praises.
-- **Behavioural evaluation suite** (§19-20) — 14 scenarios with a rubric. Best
-  run against real use, in fresh sessions, after a lesson or two exists.
-
-### Upstream the `teach` fixes — no due date, purely optional (#13-#15)
-
-The fork `vvanagas/skills` branch `teach-workspace-fixes` is three commits and
-nine changes ahead of `mattpocock/skills`. It costs nothing to leave alone; the
-only price is re-applying it if upstream is ever pulled.
-
-If it is ever worth contributing back, **split it — do not offer it as one PR:**
-
-- **A small PR: the objective defects.** The glossary was specified in three
-  disagreeing places and `GLOSSARY-FORMAT.md` was linked from nowhere while the
-  other three format files were linked. Plus dates on learning records, which
-  are near-objective — the skill mandates spacing and shipped no way to do it.
-  Anyone can verify both in two minutes; there is nothing to argue with.
-- **An issue, not a PR, for the rest.** The Iron Rule, the resolution taxonomy,
-  the scope boundary, `PLAN.md`, the grill-me/reconcile ports. These are
-  opinions about what the skill should be, and a maintainer's "no" is
-  legitimate — he may have kept it lightweight deliberately.
-
-Bundled, a reviewer who wants the bug fix but not the taxonomy has to reject
-everything. Split, the bug fix is an easy yes and the rest becomes a
-conversation. Note upstream has **no license**, so there is no CLA or explicit
-grant in either direction.
-
-### Comes due at Phase 5A
-
-- **`binding-python.txt` is not in the vendored `coding-rules` copy.** It exists
-  in the personal install. Copy it when FastAPI starts (#5, #7).
-- **Claude plan unverified.** Cloud sessions are a research preview for Pro, Max
-  and Team. Check before phone hand-off becomes load-bearing (#3).
-
-### A Tier-2 enforcement tier for `coding-rules` — a decision, no due date
-
-`coding-rules` has `[auto]` (a linter is the violation) and `[review]` (human
-judgment) and **nothing between**. `addyosmani/agent-skills` runs a third thing
-in CI that is neither: deterministic, free, and honestly labelled a *proxy* —
-stemmed TF-IDF over skill descriptions, erroring at ≥75% pairwise similarity and
-warning at ≥50%, plus a rank-1 floor that ratchets up and *"never lower it to
-make a regression pass."*
-
-The ruleset has Tier-2-shaped holes and two were hit in one day: an `[auto]` tag
-naming no mechanism (caught only because a grep happened to run), and an `[auto]`
-naming a package nobody had verified existed. Both are mechanically checkable
-and neither is a linter run. Candidate checks: every `[auto]` names a mechanism;
-every named lint rule exists in the installed plugin; every `Verified:` date is
-within N months; the projection check (already Tier 1) sits beside them.
-
-This is the genuinely novel idea in that repo and it is an addition to the
-enforcement model, not a rule — so it wants deciding rather than drafting.
-
-### Comes due at Phase 6
-
-- **`CR-13.4` exemplar slots are OWED** in both `binding-vue.txt` and
-  `binding-typescript.txt`. They need a real file from this codebase, which is
-  why they could not be filled early (#7).
-- ~~**`V-4` reads `[review]`**~~ — **CLOSED 2026-07-31**.
-  [coding-rules#2](https://github.com/vvanagas/coding-rules/pull/2) merged as
-  `aea1df6`; both local copies re-synced from upstream and hash-verified, so no
-  divergence was created. V-4 now splits by what a tool can see: static half
-  `[auto: eslint-plugin-vuejs-accessibility]`, behavioural half `[review]`
-  discharged by `@axe-core/playwright` plus explicit focus assertions. What
-  remains at Phase 6 is *using* them, not deciding them.
-- **Reconcile CR-7.5's "migrations are forward-only" with "every migration has
-  a tested `down` path"** (see Phase 5A). Reconcilable, currently unstated.
-
-### No due date — decisions and reading
-
-- **OI-02: who is canonical for Vue?** `binding-vue.txt` restates several CL
-  cards in CR grammar, so those obligations now have two homes. The corpus's own
-  one-relation-one-home rule says pick deliberately: corpus canonical and the
-  binding cites it, or the reverse (#11, #12).
-- **Five corpus files unread**, `archetype-stage-dissection.txt` most of all —
-  it holds the 12-stage pipeline everything else is expressed against (#5).
-- **`server-corpus-open-issues.txt` has no Box text representation** and cannot
-  be read through the connector. Re-saving it in Box would likely generate one
-  (#5).
-- **Two `teach` gaps left unfixed on purpose** — no record of retention outcomes
-  over time, and no home for the learner's own code. Both change the skill's
-  teaching model rather than repair an inconsistency, which is a bigger thing to
-  do to someone else's design (#13).
+Closing an item sets `state: done` and names the commit that closed it. Files
+are never deleted — the same reason learning records are superseded rather than
+removed.
 
 ## Standing decisions
 
