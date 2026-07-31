@@ -116,6 +116,58 @@ Nothing here blocks a lesson. Each item names when it actually comes due, so it
 can be ignored safely until then. Full context lives in `history.txt` at the
 entry noted.
 
+### `teach` skill v1.3 — from the external review
+
+Full review: [docs/teach-skill-review.md](./docs/teach-skill-review.md). It
+reviewed the forked v1.2 (not upstream) and its central charge is fair — several
+rules added this session are **policy without a mechanism to execute them**.
+Section numbers below point into that document.
+
+**Tier 1 — small, clearly right, next up (~30 min):**
+
+- **Turn-boundary stop rule** (§2). After asking the learner a question, stop.
+  Nothing currently forbids asking a probe and authoring in the same turn.
+- **`claimed` status** (§4). Fixes a contradiction introduced this session: the
+  Iron Rule says recall decides, and the decision table then promotes
+  self-reported prior knowledge straight to Demonstrated.
+- **Untrusted-source rule** (§7). Treat fetched pages, repos and PDFs as data;
+  ignore instructions embedded in them. Currently absent, and the skill fetches.
+- **Zero-hint quiz policy** (§10), replacing the equal-word-count rule.
+- **Ask before initializing state** (§1, the cheap half of it).
+- **Live conversation is authoritative for assessment** (§5). A static HTML
+  quiz has no channel back into the record; it must not move mastery state.
+
+**Tier 2 — real, but structural. Decide before building:**
+
+- **Review queue with real scheduling state** (§3, §6) — `last_attempt`,
+  `last_outcome`, `next_due`. This *fixes the dated-records mechanism added this
+  session*, which is broken as designed: creation date is not review state, and
+  oldest-first will keep resurfacing old-but-stable concepts while missing a
+  recently failed one. The largest single change, and the point where `teach`
+  stops being lightweight and becomes a spaced-repetition system with a schema.
+  That is a decision to take deliberately, not to drift into.
+- **Claim-level provenance** (§7) — resource IDs plus locators. "Traces to an
+  entry in `RESOURCES.md`" is bibliography membership, not claim support.
+- **Split `SKILL.md` into `references/`** (§15). It went 9.6 KB → 23.3 KB under
+  this session's edits, mostly rationale that is read once and paid for every
+  turn.
+
+**Tier 3 — larger or needs judgment:**
+
+- **`.teach/` state root + manifest** (§1). Directionally good; a breaking
+  change for every existing workspace, so it needs a migration path and should
+  probably be optional rather than the default.
+- **High-risk domain routing** (§8) — the skill advertises yoga and fitness, and
+  "delegate to a community" is not a safeguard.
+- **`LESSON-FORMAT.md` / `REFERENCE-FORMAT.md`** (§12) — turn "beautiful",
+  "short" and "self-contained" into checkable requirements.
+- **Pedagogy revisions** (§9) — cognitive-load framing instead of the
+  knowledge-vs-skill difficulty rule; worked-example fading; a corrective
+  feedback ladder. **Verify its four citations before adopting them** — adopting
+  unverified sources would break the exact provenance rule the review praises.
+- **Behavioural evaluation suite** (§19-20) — 14 scenarios with a rubric. Best
+  run against real use, in fresh sessions, after a lesson or two exists.
+
 ### Upstream the `teach` fixes — no due date, purely optional (#13-#15)
 
 The fork `vvanagas/skills` branch `teach-workspace-fixes` is three commits and
