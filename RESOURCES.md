@@ -92,6 +92,38 @@ on 2026-07-30 rather than recalled, because community links rot fastest.
   since Pages was enabled and nobody wrote it — reading a real run beats
   reading a tutorial's imaginary one.
 
+### Operational practice (Phases 5A-7)
+
+- [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) (MIT)
+  A catalog of agent skills; useful here as domain reference rather than as
+  skills to install. Verified: 2026-07-31.
+  - `skills/deprecation-and-migration/` — **expand/contract schema migrations**.
+    Use for: Phase 5A. The framing to keep is that the data is the one thing a
+    deploy rollback cannot undo, so a column is never changed in place. Contains
+    a worked five-step column rename, batched backfill, and
+    `CREATE INDEX CONCURRENTLY`.
+  - `references/accessibility-checklist.md` — criteria and tools for Phase 7.
+    Names the ground; it does not verify a package for you.
+  - `references/definition-of-done.md` — the acceptance-criteria vs
+    definition-of-done split, adopted into [LEARNING-PLAN.md](./LEARNING-PLAN.md).
+  - `references/performance-checklist.md` and `skills/performance-optimization/`
+    — **unread as of 2026-07-31**, deferred to Phase 7. Note it is anchored on
+    Core Web Vitals, which is Google's ranking-signal framing and not
+    automatically the right metric set for an internal admin tool.
+
+### Accessibility tooling (Phases 6-7)
+
+- [eslint-plugin-vuejs-accessibility](https://github.com/vue-a11y/eslint-plugin-vuejs-accessibility)
+  2.5.0, MIT, published 2026-02-13. Verified against the npm registry
+  2026-07-31. Use for: the **static** half of `binding-vue`'s V-4 — alt text,
+  accessible names, ARIA validity, real interactive elements.
+- [@axe-core/playwright](https://github.com/dequelabs/axe-core-npm)
+  4.12.1, MPL-2.0, published 2026-06-23. Verified 2026-07-31. A dev dependency,
+  so its file-level copyleft does not reach application code. Use for: the
+  **behavioural** half of V-4, which no linter can see — focus movement, focus
+  restoration, live-region announcement. Pair it with explicit focus assertions;
+  axe alone does not check that focus went somewhere sensible.
+
 ### House ruleset
 
 - `.claude/skills/coding-rules/` — vendored from

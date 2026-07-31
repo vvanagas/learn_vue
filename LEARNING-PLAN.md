@@ -175,6 +175,25 @@ injection, and Postgres — not the architecture.
 - FastAPI: path operations, Pydantic models as the request/response contract,
   dependency injection, automatic OpenAPI.
 - Postgres: schema, migrations, indexes. SQL is not new; the ORM layer is.
+- **Expand/contract migrations — the one Postgres topic your background does
+  not hand you.** Twenty years of SQL teaches you to write the `ALTER`; it does
+  not teach you that the data is the one thing a deploy rollback cannot undo.
+  Rename a column in the same release that starts using the new name and, during
+  the rollout window when old and new code are both live, one of them is
+  querying a column that does not exist. So: never change a column in place.
+  `EXPAND` (add the new column nullable, alongside) → dual-write → backfill in
+  batches → switch reads → `CONTRACT` (drop the old column, in a separate, later
+  deploy). Each step independently deployable and reversible. Adds are safe in
+  any deploy; drops and renames get their own deploy, alone, after nothing
+  references the old shape. Build large indexes with `CREATE INDEX CONCURRENTLY`
+  so writes are not blocked.
+
+  **A tension to resolve rather than inherit:** `coding-rules` CR-7.5 says
+  migrations are *forward-only*, and the source for the above says *every
+  migration has a tested `down` path*. These are reconcilable — forward-only
+  additive evolution is precisely how you avoid ever needing a `down` — but the
+  ruleset states the policy and supplies no mechanism. Expand/contract is that
+  missing mechanism. Settle the wording when you reach this phase.
 - Docker Compose: API + database + volumes, brought up with one command on a
   machine that has never seen the project.
 - Issuing JWTs: hashing, signing, expiry, refresh. **The API side of the auth
@@ -414,6 +433,43 @@ Two limits shape what that is good for:
 The practical consequence for the plan: phases 1-3 are almost entirely
 phone-compatible, because HTML, CSS, TypeScript and Vue components need no
 running database. From Phase 5A on, the stack matters and the desk matters.
+
+## Definition of Done
+
+The phase exit criteria above are **acceptance criteria** — they answer *"did I
+build the right thing?"*, and each one is different. They are not a standard.
+What follows is the **Definition of Done**: fixed, applied to every increment,
+and answering the other question — *"is it ready?"* A phase is finished only
+when its exit criterion is met **and** this bar is cleared. Skipping either
+leaves work that looks finished and is not.
+
+Most of this already existed, scattered across `coding-rules` §0 and the Iron
+Law. Naming it once is the point; a bar renegotiated per phase is not a bar.
+
+- [ ] It **runs**. Verified at runtime, not merely compiled or type-checked.
+- [ ] New behaviour is covered by a test that **failed before the change and
+      passes after** — with the failing run captured, per the Iron Law. A test
+      written after the code proves nothing about the code.
+- [ ] Existing tests still pass. No regressions.
+- [ ] Error and empty paths are handled, not only the happy path (CR-2.13's
+      union has a variant per state, and every variant renders).
+- [ ] External input is validated at the boundary (CR-4.3), and no secret has
+      reached code, logs, or history (CR-8.5).
+- [ ] Typecheck and lint are green — `vue-tsc --noEmit`, not `tsc` alone.
+- [ ] The diff is scoped to the slice. No drive-by refactors (CR-13.5).
+- [ ] Anything a future session would otherwise re-derive is written down: a
+      learning record if something was learned, a `NOTES.md` line if a decision
+      was taken, `history.txt` if commands were run.
+- [ ] `NEXT:` in `NOTES.md` reflects reality before the session ends.
+
+**Not on the list, deliberately:** "I understand it." Understanding is what the
+learning records adjudicate, on evidence, and it is not a shipping gate.
+
+**Red flags** — each of these is the bar quietly moving:
+
+- "It's done, I just haven't run it." Unverified work is not done.
+- "Tests pass" standing in for done while a regression or the docs go unchecked.
+- A different bar applied because a phase is running late.
 
 ## Review points
 

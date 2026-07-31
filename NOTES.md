@@ -191,14 +191,37 @@ grant in either direction.
 - **Claude plan unverified.** Cloud sessions are a research preview for Pro, Max
   and Team. Check before phone hand-off becomes load-bearing (#3).
 
+### A Tier-2 enforcement tier for `coding-rules` — a decision, no due date
+
+`coding-rules` has `[auto]` (a linter is the violation) and `[review]` (human
+judgment) and **nothing between**. `addyosmani/agent-skills` runs a third thing
+in CI that is neither: deterministic, free, and honestly labelled a *proxy* —
+stemmed TF-IDF over skill descriptions, erroring at ≥75% pairwise similarity and
+warning at ≥50%, plus a rank-1 floor that ratchets up and *"never lower it to
+make a regression pass."*
+
+The ruleset has Tier-2-shaped holes and two were hit in one day: an `[auto]` tag
+naming no mechanism (caught only because a grep happened to run), and an `[auto]`
+naming a package nobody had verified existed. Both are mechanically checkable
+and neither is a linter run. Candidate checks: every `[auto]` names a mechanism;
+every named lint rule exists in the installed plugin; every `Verified:` date is
+within N months; the projection check (already Tier 1) sits beside them.
+
+This is the genuinely novel idea in that repo and it is an addition to the
+enforcement model, not a rule — so it wants deciding rather than drafting.
+
 ### Comes due at Phase 6
 
 - **`CR-13.4` exemplar slots are OWED** in both `binding-vue.txt` and
   `binding-typescript.txt`. They need a real file from this codebase, which is
   why they could not be filled early (#7).
-- **`V-4` reads `[review]` where part should be `[auto]`** — no accessibility
-  linter is named in `binding-vue`, because the package identity was not
-  verified at authoring time and citing it wrongly is worse than the gap (#7).
+- ~~**`V-4` reads `[review]`**~~ — **resolved 2026-07-31**, pending merge of
+  [coding-rules#2](https://github.com/vvanagas/coding-rules/pull/2). Both
+  packages verified against npm; V-4 now splits by what a tool can see, static
+  half `[auto]` and behavioural half `[review]`. Merging closes it; until then
+  the local copies still carry the OWED, deliberately, to avoid divergence.
+- **Reconcile CR-7.5's "migrations are forward-only" with "every migration has
+  a tested `down` path"** (see Phase 5A). Reconcilable, currently unstated.
 
 ### No due date — decisions and reading
 
