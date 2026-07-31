@@ -20,8 +20,21 @@ weakness is *below* Vue, not in it.
 
 ## Teaching preferences
 
-- Not yet stated by the learner. Fill in as they emerge.
-- Provisional, inferred from background — revise on contact with reality:
+Observed (2026-07-31, lesson `0001`):
+
+- **Will not produce a low-confidence guess.** Asked to guess, answered "don't
+  know, really, won't even guess". This is not disengagement — the earlier probe
+  got a considered wrong answer, freely given. The rule appears to be: a guess
+  with *some* reasoning behind it, yes; a shot in the dark, no.
+  **Consequence:** a stalled question is a signal the question is bad, not that
+  the learner is stuck. Check it for untaught variables before re-asking. (This
+  already happened once, and the check was worth it — see
+  `learning-records/0006`.)
+- **Asks about method, not just content** — "should I answer now or after I read
+  the doc?" Worth answering properly rather than deflecting; the reasoning
+  behind the method appears to be of interest in its own right.
+
+Provisional, inferred from background — revise on contact with reality:
   - Analogies to Perl/Unix/.NET will land; analogies to React will not.
   - Explanations of *mechanism* ("what the browser does with this") will land
     better than explanations of *convention* ("this is how it's done"), given
@@ -101,9 +114,11 @@ Session handover (2026-07-31): [handover.md](./handover.md) — repo SHAs, the
 traps a fresh session hits, and the findings that generalise. Read it before
 re-deriving anything.
 
-NEXT: Author lesson `0001` — Phase 1, the browser layer. Hand-written HTML and
-CSS, no Vue, no build tools. Nothing is blocking it: mission, plan, resources
-and the `Deferred` list above are all settled. `lessons/`, `reference/` and
-`assets/` are empty, so this session also earns the workspace its shared
-stylesheet (`assets/`), which is itself Phase 1 CSS practice. There is no older
-material to retrieve yet — spacing starts at lesson `0002`.
+NEXT: Author lesson `0002` — the global `border-box` reset, which lesson `0001`
+deliberately left open. **Open it with a cold retrieval of `0001` before
+teaching anything:** ask what `width: 300px; padding: 20px; border: 2px` renders
+as, with no prompting. `learning-records/0006` records that answer as *fluency,
+not storage* — it was correct minutes after reading — so the concept is still
+open and this retrieval is what closes it or reopens it. Also queued for early
+Phase 1: what a percentage width resolves against, a gap surfaced by a malformed
+question in session one.

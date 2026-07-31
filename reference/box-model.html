@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference — The box model</title>
+<link rel="stylesheet" href="../assets/lesson.css">
+</head>
+<body>
+
+<p class="meta">REFERENCE &middot; THE BOX MODEL &middot; UPDATED 2026-07-31 &middot; PRINTS ON ONE PAGE</p>
+
+<h1>The box model</h1>
+<p class="subtitle">What <code>width</code> measures, and how to work out what
+lands on screen.</p>
+
+<h2>Four boxes, nested</h2>
+
+<div class="table-scroll">
+<table>
+  <thead><tr><th>Box</th><th>Defined by</th></tr></thead>
+  <tbody>
+    <tr><td>content</td><td>the content itself</td></tr>
+    <tr><td>padding</td><td>content + <code>padding</code></td></tr>
+    <tr><td>border</td><td>padding + <code>border</code></td></tr>
+    <tr><td>margin</td><td>border + <code>margin</code> &mdash; space <em>around</em>, never part of the element's own size</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>The two sizing models</h2>
+
+<div class="table-scroll">
+<table>
+  <thead>
+    <tr><th></th><th><code>content-box</code></th><th><code>border-box</code></th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Status</td><td><strong>the initial value</strong> — what you get by default</td><td>opt-in, one line</td></tr>
+    <tr><td><code>width</code> sizes</td><td>the content box</td><td>the border box</td></tr>
+    <tr><td>Padding &amp; border</td><td>added <em>outward</em></td><td>subtracted <em>inward</em></td></tr>
+    <tr><td>Screen width</td><td><code>width</code> + padding + border</td><td>exactly <code>width</code></td></tr>
+    <tr><td>Content width</td><td>exactly <code>width</code></td><td><code>width</code> &minus; padding &minus; border</td></tr>
+    <tr><td>Margin</td><td colspan="2">excluded from both</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>The arithmetic</h2>
+
+<pre><code>/* content-box (default) */
+screen  = width + padding-left + padding-right + border-left + border-right
+content = width
+
+/* border-box */
+screen  = width
+content = width - padding-left - padding-right - border-left - border-right</code></pre>
+
+<h2>Worked</h2>
+
+<pre><code>width: 300px; padding: 20px; border: 2px solid;
+
+  content-box  &rarr;  screen 344px,  content 300px    /* 300 + 40 + 4 */
+  border-box   &rarr;  screen 300px,  content 256px    /* 300 - 40 - 4 */</code></pre>
+
+<div class="callout callout--warn">
+  <span class="callout__label">The recurring trap</span>
+  <p>Remembering that <em>border</em> is added but forgetting that <em>padding</em>
+  is too. Under <code>content-box</code> both are outside the declared width.
+  A box that overflows its container by a suspiciously round number is almost
+  always this.</p>
+</div>
+
+<h2>Reading it instead of computing it</h2>
+
+<p>Devtools &rarr; <strong>Computed</strong> pane &rarr; the four-ring diagram at
+the top. Rings are content / padding / border / margin, innermost outward — the
+same four, same order. Hover a ring to highlight it on the page.</p>
+
+<h2>Sources</h2>
+<ul class="cite">
+  <li><a href="https://web.dev/learn/css/box-model">web.dev — Learn CSS: Box Model</a> · verified 2026-07-31</li>
+  <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing">MDN — <code>box-sizing</code></a> · verified 2026-07-31</li>
+</ul>
+
+<nav class="nav">
+  <a href="../lessons/0001-what-width-measures.html">&larr; Lesson 0001</a>
+</nav>
+
+</body>
+</html>

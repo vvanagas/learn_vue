@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0001 — What <code>width</code> actually measures</title>
+<link rel="stylesheet" href="../assets/lesson.css">
+</head>
+<body>
+
+<p class="meta">LESSON 0001 &middot; PHASE 1, THE BROWSER LAYER &middot; 2026-07-31 &middot; ~15 MIN</p>
+
+<h1>What <code>width</code> actually measures</h1>
+<p class="subtitle">You were two numbers away. This lesson is about which two, and why
+they are the two that everyone loses.</p>
+
+<h2>Where you already were</h2>
+
+<p>Asked how wide this renders, you said <strong>304px</strong>:</p>
+
+<pre><code>.card {
+  width: 300px;
+  padding: 20px;
+  border: 2px solid black;
+}</code></pre>
+
+<p>That answer is more right than a wrong answer usually is. You took the
+declared <code>width</code>, then <em>added the border on both sides</em> —
+300 + 2 + 2. Which means you were not treating <code>width</code> as
+"the width of the thing on screen". You already had a model in which the box has
+layers and the declared number sits somewhere inside them.</p>
+
+<p>The layer boundary was in the wrong place. The real answer is
+<strong>344px</strong>, and the missing 40 is the padding.</p>
+
+<div class="callout callout--key">
+  <span class="callout__label">The one idea</span>
+  <p>Under the default, <code>width</code> sizes the <strong>content box</strong>
+  — the innermost layer. <em>Both</em> padding and border are added outside it.
+  Not one of them. Both.</p>
+</div>
+
+<h2>The four boxes</h2>
+
+<p>Every element the browser lays out is not one box but four, nested:</p>
+
+<div class="table-scroll">
+<table>
+  <thead>
+    <tr><th>Box</th><th>What defines it</th><th>In the card above</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Content box</strong></td><td>where the content actually sits</td><td>300px</td></tr>
+    <tr><td><strong>Padding box</strong></td><td>content box + <code>padding</code></td><td>300 + 20 + 20 = 340px</td></tr>
+    <tr><td><strong>Border box</strong></td><td>padding box + <code>border</code></td><td>340 + 2 + 2 = <strong>344px</strong></td></tr>
+    <tr><td><strong>Margin box</strong></td><td>border box + <code>margin</code></td><td>344px (no margin set)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="cite">The four names are web.dev's, and they are the names the browser
+devtools use too — worth adopting exactly, because it makes the devtools diagram
+readable without translation.
+<a href="https://web.dev/learn/css/box-model">web.dev — Learn CSS: Box Model</a></p>
+
+<h2>Why 344 and not 304</h2>
+
+<p>Because of a property you did not write, and whose value nobody chose:</p>
+
+<pre><code>box-sizing: content-box;   /* the initial value, per the CSS standard */</code></pre>
+
+<p>MDN states the consequence flatly: with <code>content-box</code>, the
+<code>width</code> and <code>height</code> properties
+<em>"include the content, but do not include the padding, border, or
+margin."</em>
+<span class="cite"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing">MDN — <code>box-sizing</code></a></span></p>
+
+<p>So <code>width: 300px</code> is not a promise about the element. It is a
+promise about the element's <em>innermost</em> layer, and everything you add
+after it grows the box outward.</p>
+
+<h2>The other model</h2>
+
+<p>One line moves the boundary to where you probably assumed it was:</p>
+
+<pre><code>.card {
+  box-sizing: border-box;    /* width now measures the border box */
+  width: 300px;
+  padding: 20px;
+  border: 2px solid black;
+}</code></pre>
+
+<p>Now the card is <strong>300px</strong> on screen. The padding and border are
+subtracted <em>inward</em> instead of added outward, so the content box shrinks
+to 300 &minus; 40 &minus; 4 = 256px.
+<span class="cite">MDN: <em>"include the content, padding, and border, but do not
+include the margin."</em></span></p>
+
+<div class="demo">
+  <p class="demo__title">Same declaration, two values of box-sizing</p>
+
+  <div class="demo__box demo__box--w300 demo__box--padded">content-box &middot; width:300px</div>
+  <div class="demo__ruler demo__ruler--344"><span>&larr; 344px on screen &rarr;</span></div>
+
+  <div style="height:1.5rem"></div>
+
+  <div class="demo__box demo__box--w300 demo__box--padded demo__box--border">border-box &middot; width:300px</div>
+  <div class="demo__ruler demo__ruler--300"><span>&larr; 300px on screen &rarr;</span></div>
+</div>
+
+<p>These are real elements styled by
+<a href="../assets/lesson.css">the workspace stylesheet</a>, not pictures of
+elements. Open devtools on this page and inspect them.</p>
+
+<h2>Stop guessing: read it instead</h2>
+
+<p>The mission says you should be able to fix a layout <em>by reasoning about the
+box model</em> rather than by trial and error. The instrument for that is the
+devtools box-model diagram, and this is the lesson to start using it on:</p>
+
+<ol>
+  <li>Right-click either demo box above &rarr; <strong>Inspect</strong>.</li>
+  <li>Find the <strong>Computed</strong> pane. At its top is a nested diagram
+      with four rings — the same four boxes, in the same order.</li>
+  <li>Read the numbers off the rings. One box reads 300 at the centre; the other
+      reads 300 at the outside.</li>
+</ol>
+
+<p>That diagram answers "why is this the size it is" faster than any amount of
+reading, and it is the habit Phase 1 exists to build.</p>
+
+<details class="selfcheck">
+  <summary>Self-check — predict before you expand</summary>
+  <pre><code>.thumb {
+  box-sizing: border-box;
+  width: 120px;
+  padding: 8px;
+  border: 4px solid;
+}</code></pre>
+  <p>How wide is it on screen, and how wide is its content box?</p>
+  <p><strong>120px on screen.</strong> The content box is
+  120 &minus; (2 &times; 8) &minus; (2 &times; 4) = <strong>96px</strong>.</p>
+  <p class="cite">This one is yours alone — I cannot see what you clicked. If
+  you want it to count, tell me the answer in conversation.</p>
+</details>
+
+<div class="callout callout--warn">
+  <span class="callout__label">Left open on purpose</span>
+  <p>If <code>border-box</code> is what you meant every time, the obvious move is
+  to set it on <em>everything</em>, once. That is a real and common thing to do —
+  and it is lesson <code>0002</code>, not a footnote here. One win per lesson.</p>
+</div>
+
+<h2>Read this next</h2>
+
+<p><strong>Primary source:</strong>
+<a href="https://web.dev/learn/css/box-model">web.dev — Learn CSS: Box Model</a>.
+Written by browser engineers, and the spine of Phase 1 per
+<a href="../RESOURCES.md">RESOURCES.md</a>. Read the whole page; it is short, and
+it covers the <code>display</code> interaction this lesson deliberately left out.</p>
+
+<p>Compressed version to keep:
+<a href="../reference/box-model.html">reference/box-model.html</a>.</p>
+
+<div class="callout">
+  <span class="callout__label">Your teacher is in the terminal</span>
+  <p>Anything here that did not land, ask. That includes "why would anyone make
+  <code>content-box</code> the default" — there is a real answer, and it is a
+  better question than it looks.</p>
+</div>
+
+<div class="sources">
+  <strong>Sources</strong>
+  <ul>
+    <li><a href="https://web.dev/learn/css/box-model">web.dev — Learn CSS: Box Model</a>
+        — the four boxes; <code>content-box</code> as the default; the worked
+        200px/20px/10px &rarr; 260px example this lesson mirrors.</li>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing">MDN — <code>box-sizing</code></a>
+        — <code>content-box</code> as the initial value; both quoted definitions;
+        the 160/20/8 &rarr; 216px worked example.</li>
+  </ul>
+  <p class="cite">Both verified 2026-07-31. Neither claim is version-bound: this
+  is the CSS standard box model, not a framework behaviour.</p>
+</div>
+
+<nav class="nav">
+  <a href="../reference/box-model.html">Reference: the box model &rarr;</a><br>
+  <a href="../LEARNING-PLAN.md">Phase 1 plan</a> &middot;
+  <a href="../MISSION.md">Mission</a>
+</nav>
+
+</body>
+</html>

@@ -1,0 +1,218 @@
+/* ---------------------------------------------------------------------------
+   lesson.css — the shared stylesheet for every lesson and reference doc
+   in this workspace.
+
+   First component the workspace earned (2026-07-31). Every lesson links it,
+   so the course looks like one course rather than a pile of one-offs.
+
+   Deliberately hand-written, with no framework and no build step: this file
+   is itself Phase 1 practice, and it is meant to be read as much as used.
+   --------------------------------------------------------------------------- */
+
+/* --- Tokens ---------------------------------------------------------------
+   One place to change the look of every lesson at once. */
+:root {
+  --ink:        #1a1a1a;
+  --ink-soft:   #55524d;
+  --paper:      #fffef9;
+  --rule:       #d8d2c4;
+  --accent:     #7a2e1e;   /* used sparingly: links, the one thing that matters */
+  --accent-bg:  #fdf3ef;
+  --good:       #1f5d3a;
+  --good-bg:    #eef6f0;
+  --warn:       #7a5a12;
+  --warn-bg:    #fdf6e3;
+
+  --measure:    34em;      /* line length. ~65-75 characters is the target. */
+  --font-body:  "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-mono:  "Cascadia Mono", "JetBrains Mono", Consolas, "Courier New", monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink:       #e8e3d9;
+    --ink-soft:  #a9a293;
+    --paper:     #14130f;
+    --rule:      #3a372f;
+    --accent:    #e08a6a;
+    --accent-bg: #2a1c16;
+    --good:      #7fc79b;
+    --good-bg:   #16241b;
+    --warn:      #e0bd6a;
+    --warn-bg:   #2a2413;
+  }
+}
+
+/* --- Page ----------------------------------------------------------------- */
+body {
+  margin: 0 auto;
+  padding: 3rem 1.25rem 6rem;
+  max-width: var(--measure);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.62;
+  text-rendering: optimizeLegibility;
+}
+
+/* --- Type ----------------------------------------------------------------- */
+h1, h2, h3 { line-height: 1.22; font-weight: 600; }
+h1 { font-size: 1.9rem; margin: 0 0 .3rem; letter-spacing: -0.01em; }
+h2 { font-size: 1.3rem; margin: 2.75rem 0 .75rem; }
+h3 { font-size: 1.05rem; margin: 2rem 0 .5rem; }
+
+p  { margin: 0 0 1.15rem; }
+ul, ol { margin: 0 0 1.15rem; padding-left: 1.4rem; }
+li { margin-bottom: .35rem; }
+strong { font-weight: 600; }
+
+a { color: var(--accent); text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+
+.subtitle {
+  margin: 0 0 2rem;
+  color: var(--ink-soft);
+  font-size: 1.05rem;
+  font-style: italic;
+}
+
+.meta {
+  margin: 0 0 2.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  letter-spacing: .02em;
+}
+
+/* --- Code ----------------------------------------------------------------- */
+code, kbd {
+  font-family: var(--font-mono);
+  font-size: .86em;
+}
+p code, li code, td code {
+  padding: .1em .35em;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--rule) 40%, transparent);
+}
+pre {
+  margin: 0 0 1.15rem;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;              /* long lines scroll here, never the page */
+  border-left: 3px solid var(--rule);
+  background: color-mix(in srgb, var(--rule) 22%, transparent);
+  font-size: .9rem;
+  line-height: 1.5;
+}
+pre code { padding: 0; background: none; }
+
+/* --- Callouts -------------------------------------------------------------
+   Three, and no more. A palette of callouts nobody can tell apart is noise. */
+.callout {
+  margin: 1.5rem 0;
+  padding: .9rem 1.1rem;
+  border-left: 3px solid var(--rule);
+  background: color-mix(in srgb, var(--rule) 18%, transparent);
+}
+.callout > :last-child { margin-bottom: 0; }
+.callout--win  { border-color: var(--good);   background: var(--good-bg); }
+.callout--warn { border-color: var(--warn);   background: var(--warn-bg); }
+.callout--key  { border-color: var(--accent); background: var(--accent-bg); }
+.callout__label {
+  display: block;
+  margin-bottom: .35rem;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.callout--win  .callout__label { color: var(--good); }
+.callout--warn .callout__label { color: var(--warn); }
+.callout--key  .callout__label { color: var(--accent); }
+
+/* --- Tables --------------------------------------------------------------- */
+.table-scroll { overflow-x: auto; margin: 0 0 1.15rem; }
+table { border-collapse: collapse; width: 100%; font-size: .95rem; }
+th, td { padding: .45rem .6rem; text-align: left; border-bottom: 1px solid var(--rule); }
+th { font-size: .78rem; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-soft); }
+
+/* --- Self-check (collapsed answer) ---------------------------------------
+   The result of one of these never reaches the teacher. It is for the
+   learner alone; anything that counts gets said in conversation. */
+.selfcheck {
+  margin: 1.5rem 0;
+  padding: .9rem 1.1rem;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+.selfcheck summary { cursor: pointer; font-weight: 600; }
+.selfcheck[open] summary { margin-bottom: .8rem; }
+.selfcheck > :last-child { margin-bottom: 0; }
+
+/* --- Citations ------------------------------------------------------------ */
+.cite { font-size: .82rem; color: var(--ink-soft); }
+.sources { margin-top: 3.5rem; padding-top: 1rem; border-top: 1px solid var(--rule); font-size: .9rem; }
+
+/* --- Footer nav ----------------------------------------------------------- */
+.nav {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  font-size: .9rem;
+}
+
+/* --- Box-model demo (reusable: any lesson comparing rendered widths) ------ */
+.demo {
+  margin: 1.75rem 0;
+  padding: 1.25rem;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--rule) 12%, transparent);
+  overflow-x: auto;
+}
+.demo__title {
+  margin: 0 0 .9rem;
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.demo__box {
+  /* The subject under test. Lessons override width/padding/border/box-sizing. */
+  background: var(--accent-bg);
+  border: 2px solid var(--accent);
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  color: var(--ink);
+}
+.demo__box--padded { padding: 20px; }
+.demo__box--w300   { width: 300px; }
+.demo__box--border { box-sizing: border-box; }
+.demo__ruler {
+  position: relative;
+  height: 1.4rem;
+  margin-top: .35rem;
+  border-top: 1px dashed var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  color: var(--ink-soft);
+}
+.demo__ruler span { position: absolute; top: .2rem; }
+.demo__ruler--344 { width: 344px; }
+.demo__ruler--300 { width: 300px; }
+
+/* --- Print ----------------------------------------------------------------
+   Reference docs get printed and pinned up. Make that come out right. */
+@media print {
+  :root { --paper: #fff; --ink: #000; --ink-soft: #444; --rule: #bbb; }
+  body { padding: 0; font-size: 11pt; max-width: none; }
+  .nav, .selfcheck summary { display: none; }
+  .selfcheck { border: none; padding: 0; }
+  .selfcheck[open] > * { display: block; }
+  pre, .demo, .callout { break-inside: avoid; }
+  a::after { content: " (" attr(href) ")"; font-size: 8pt; color: #555; }
+  a[href^="#"]::after { content: ""; }
+}
