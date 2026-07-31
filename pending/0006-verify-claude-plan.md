@@ -9,7 +9,6 @@ owner: learn_vue
 tags: [tooling, phone, unverified]
 stale_after: 2026-12-31
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
-verified: { by: human:vvanagas, at: 2026-07-31T13:30:00Z }
 ---
 
 # Verify the Claude plan supports cloud sessions

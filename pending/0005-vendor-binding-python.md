@@ -8,7 +8,6 @@ trigger: When Phase 5A starts and FastAPI code gets written.
 owner: learn_vue
 tags: [coding-rules, phase-5a]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
-verified: { by: human:vvanagas, at: 2026-07-31T13:30:00Z }
 ---
 
 # Vendor binding-python.txt

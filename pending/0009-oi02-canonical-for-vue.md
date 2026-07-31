@@ -8,7 +8,6 @@ trigger: No date. A decision awaiting the corpus owner.
 owner: Box shared/golden (client-corpus-open-issues.txt, OI-02)
 tags: [corpus, binding-vue, decision]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
-verified: { by: human:vvanagas, at: 2026-07-31T13:30:00Z }
 ---
 
 # OI-02 — canonical home for the Vue obligations

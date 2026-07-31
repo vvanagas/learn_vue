@@ -8,7 +8,6 @@ trigger: When a real performance symptom appears — probably the first list scr
 owner: learn_vue
 tags: [performance, phase-7, reading]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
-verified: { by: human:vvanagas, at: 2026-07-31T13:30:00Z }
 ---
 
 # Read the performance pack

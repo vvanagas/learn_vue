@@ -8,7 +8,6 @@ trigger: Only if real use shows they bite. Neither is a defect; both are design 
 owner: vvanagas/skills (the fork)
 tags: [teach, design]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
-verified: { by: human:vvanagas, at: 2026-07-31T13:30:00Z }
 ---
 
 # Two teach gaps left unfixed on purpose

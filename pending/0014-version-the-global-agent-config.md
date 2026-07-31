@@ -8,7 +8,6 @@ trigger: Closed 2026-07-31 by 78abd9a in vvanagas/claude-config (private).
 owner: workstation (C:\Users\Vidma\.claude)
 tags: [config, git, risk]
 generated: { by: claude/opus-5, at: 2026-07-31T16:45:00Z }
-verified: { by: human:vvanagas, at: 2026-07-31T16:45:00Z }
 ---
 
 # Version the global agent config

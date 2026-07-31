@@ -8,7 +8,6 @@ trigger: Whenever its contents matter — it is the server-side ledger and has n
 owner: Box shared/golden
 tags: [corpus, box, tooling]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
-verified: { by: human:vvanagas, at: 2026-07-31T13:30:00Z }
 ---
 
 # Re-save server-corpus-open-issues.txt

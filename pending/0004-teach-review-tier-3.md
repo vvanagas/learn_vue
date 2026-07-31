@@ -8,7 +8,6 @@ trigger: After Tier 2 settles; the pedagogy item needs its sources checked first
 owner: vvanagas/skills (the fork)
 tags: [teach, review]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
-verified: { by: human:vvanagas, at: 2026-07-31T13:30:00Z }
 ---
 
 # teach review Tier 3

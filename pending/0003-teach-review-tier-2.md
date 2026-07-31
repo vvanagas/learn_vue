@@ -8,7 +8,6 @@ trigger: FIRED 2026-07-31 on lesson one — see "Observed". Ordering is demonstr
 owner: vvanagas/skills (the fork)
 tags: [teach, review, decision]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
-verified: { by: human:vvanagas, at: 2026-07-31T13:30:00Z }
 ---
 
 # teach review Tier 2

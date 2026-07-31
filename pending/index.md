@@ -17,6 +17,34 @@ Numbers are creation order and permanent — they get cited from commit messages
 so they never renumber. Priority is not the number. Closing an item means setting
 `state: done` and naming the commit that closed it, never deleting the file.
 
+## Provenance — read before adding `verified:` back
+
+Every item carried `verified: { by: human:vvanagas, at: 2026-07-31T13:30:00Z }`
+until 2026-07-31. **It was removed from all fourteen, deliberately.** The stamp
+was identical across every file to the second, which means it recorded one
+approval of *building the bundle* while asserting fourteen separate checks of
+individual claims. OKF's `verified` means a claim was checked against its source
+rather than recalled; a batch stamp is the rubber stamp the field exists to
+prevent, and a field that is always present carries no information.
+
+Its absence is therefore **information, not an omission.** Do not restore it as
+a missing field.
+
+An item earns `verified:` back one at a time, when a named actor has actually
+checked *that item's* claims against *that item's* sources. Until then
+`generated:` alone is the honest frontmatter.
+
+**Sources are named inline, in the item.** The actual source — Box file, URL,
+npm registry entry, doc section — not a `history.txt` entry number. The ledger
+is git-ignored and desk-only, so an item that cites it is unreadable from a
+clone or a phone, which is where this backlog gets read.
+
+Existing items state *what* and *why* and mostly do not cite *what that rests
+on*. That is a known gap, accepted rather than fixed in bulk: an item gains its
+`## Sources` block when it is picked up, because reconstructing citations for
+work that may never fire is the expensive half of the job with none of the
+payoff. New items carry sources from the start.
+
 # Fires at a known phase
 
 * [0005 — Vendor binding-python.txt](0005-vendor-binding-python.md) - the Python binding is missing from the vendored copy; Phase 5A.

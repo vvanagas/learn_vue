@@ -8,7 +8,6 @@ trigger: If upstream mattpocock/skills changes the teach skill — or never; thi
 owner: vvanagas/skills (the fork)
 tags: [teach, upstream, fork]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
-verified: { by: human:vvanagas, at: 2026-07-31T13:30:00Z }
 ---
 
 # Upstream the teach skill fixes

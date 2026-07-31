@@ -8,7 +8,6 @@ trigger: Before Phase 4 design work leans on stage vocabulary; archetype-stage-d
 owner: learn_vue
 tags: [corpus, reading]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
-verified: { by: human:vvanagas, at: 2026-07-31T13:30:00Z }
 ---
 
 # Read the remaining corpus files
