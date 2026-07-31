@@ -4,7 +4,7 @@ title: teach review Tier 2 — real scheduling state, provenance IDs, split SKIL
 description: The structural half of the pre-use review; the scheduling queue changes what kind of tool teach is.
 status: stable
 state: open
-trigger: After a few real lessons exist — the queue's shape will be better specified by use than by design.
+trigger: FIRED 2026-07-31 on lesson one — see "Observed". Ordering is demonstrably wrong; the remaining decision is how much machinery to answer it with.
 owner: vvanagas/skills (the fork)
 tags: [teach, review, decision]
 generated: { by: claude/opus-5, at: 2026-07-31T13:30:00Z }
@@ -43,3 +43,26 @@ that is read once and paid for every turn thereafter.
 A scheduling queue is where `teach` **stops being a lightweight skill and
 becomes a spaced-repetition system with a schema**. That may well be correct. It
 should be chosen deliberately rather than drifted into.
+
+## Observed 2026-07-31 — the predicted failure, on lesson one
+
+The trigger above expected "a few real lessons". One was enough.
+
+`learning-records/0006` is the **newest** record and the **only open** concept
+in the workspace: the box-model transfer answer was correct but arrived minutes
+after reading, so it is fluency rather than storage and needs a cold re-test.
+Oldest-first sorts it **last**, behind `0001`-`0005` — five settled decision
+records (prior knowledge, mission, stack, corpus, CI) that carry nothing to
+retrieve and will resurface every session forever.
+
+So the review's charge is no longer an argument, it is an observation: **a
+creation date is not review state.** The one record that needs attention is the
+one the current ordering reaches last, and the records it reaches first are
+permanently inert. The `NEXT:` line in `NOTES.md` is currently carrying the
+scheduling decision by hand, in prose — which works at one open concept and is
+exactly the thing that does not scale.
+
+Note what this does *not* settle: it is evidence the ordering is wrong, not
+evidence the answer is a full queue with a schema. A cheaper fix may exist —
+e.g. a `status:`/`next_due:` line in the records that already exist, sorted on
+read, with no new state root. Weigh that before adopting §3 wholesale.
