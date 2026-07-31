@@ -32,6 +32,10 @@ so they never renumber. Priority is not the number. Closing an item means settin
 * [0010 — Read the remaining corpus files](0010-read-remaining-corpus-files.md) - archetype-stage-dissection holds the 12-stage pipeline everything else is expressed against.
 * [0011 — Re-save server-corpus-open-issues.txt](0011-resave-server-open-issues.md) - no text representation in Box; the server-side ledger has never been read.
 
+# Done
+
+* [0014 — Version the global agent config](0014-version-the-global-agent-config.md) - DONE 2026-07-31, private repo `vvanagas/claude-config` with recovered history and a symlink.
+
 # Decisions, no date
 
 * [0009 — OI-02, canonical home for Vue](0009-oi02-canonical-for-vue.md) - the same obligations now live in two places; the corpus's own rule forbids it.

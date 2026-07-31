@@ -3,8 +3,8 @@ type: Pending
 title: Put the global agent config under version control
 description: ~/.claude/CLAUDE.md is 13 KB of load-bearing rules with no git, no backup, and no rollback.
 status: stable
-state: open
-trigger: Now-ish. It has no history, and it is edited by agents — including today.
+state: done
+trigger: Closed 2026-07-31 by 78abd9a in vvanagas/claude-config (private).
 owner: workstation (C:\Users\Vidma\.claude)
 tags: [config, git, risk]
 generated: { by: claude/opus-5, at: 2026-07-31T16:45:00Z }
@@ -12,6 +12,17 @@ verified: { by: human:vvanagas, at: 2026-07-31T16:45:00Z }
 ---
 
 # Version the global agent config
+
+> **DONE 2026-07-31.** Private repo `vvanagas/claude-config`, three commits:
+> `fcadd0d` (2026-02-19), `8590e2a` (2026-03-12), `78abd9a` (today) — the first
+> two recovered from the stray `CLAUDE - Copy` files and committed at their
+> original mtimes, so the log shows when the rules actually changed. Separate
+> repo rather than `git init` in `~/.claude`, because that directory holds
+> `.credentials.json` and in-place tracking is a denylist that must stay correct
+> forever; a separate repo is an allowlist. `~/.claude/CLAUDE.md` is now a
+> **symlink** into the repo — verified bidirectional, so drift is impossible
+> rather than discouraged. `skills/` deliberately excluded: already downstream
+> of two upstream repos, so a third copy would be drift, not backup.
 
 ## What
 
